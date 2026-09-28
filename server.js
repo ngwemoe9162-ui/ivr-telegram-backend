@@ -13,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 10000;
+
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const GROUP_ID = process.env.TELEGRAM_GROUP_ID;
 
@@ -24,12 +25,22 @@ function escapeHtml(value) {
         .replace(/"/g, "&quot;");
 }
 
+
+// ===============================
+// HOME / HEALTH CHECK
+// ===============================
+
 app.get("/", (req, res) => {
     res.json({
         status: "online",
         service: "IVR Telegram Backend"
     });
 });
+
+
+// ===============================
+// ORDER API
+// ===============================
 
 app.post("/api/orders", (req, res) => {
 
@@ -41,7 +52,7 @@ app.post("/api/orders", (req, res) => {
     form.parse(req, async (err, fields, files) => {
 
         if (err) {
-            console.error(err);
+            console.error("Form Parse Error:", err);
 
             return res.status(400).json({
                 success: false,
@@ -50,6 +61,10 @@ app.post("/api/orders", (req, res) => {
         }
 
         try {
+
+            // ===============================
+            // GET ORDER DATA
+            // ===============================
 
             const game = fields.game?.[0] || "";
             const playerId = fields.playerId?.[0] || "";
@@ -60,12 +75,27 @@ app.post("/api/orders", (req, res) => {
             const accountHolder = fields.accountHolder?.[0] || "";
             const targetPhone = fields.targetPhone?.[0] || "";
 
+
+            // ===============================
+            // ORDER ID
+            // ===============================
+
             const orderId =
                 "IVR-" + Date.now().toString().slice(-8);
+
+
+            // ===============================
+            // DATE / TIME
+            // ===============================
 
             const dateTime = new Date().toLocaleString("en-US", {
                 timeZone: "Asia/Yangon"
             });
+
+
+            // ===============================
+            // TELEGRAM MESSAGE
+            // ===============================
 
             let message = "";
 
@@ -118,11 +148,19 @@ app.post("/api/orders", (req, res) => {
 
             message += "━━━━━━━━━━━━━━━━━━\n";
             message += "📎 <i>Payment slip attached below.</i>";
+            // ===============================
+            // PAYMENT SLIP
+            // ===============================
 
             const slip =
                 files.slip ||
                 files.paymentSlip ||
                 files.receipt;
+
+
+            // ===============================
+            // SEND TO TELEGRAM
+            // ===============================
 
             if (slip) {
 
@@ -144,8 +182,16 @@ app.post("/api/orders", (req, res) => {
                     fs.createReadStream(slipFile.filepath)
                 );
 
-                formData.append("caption", message);
-                formData.append("parse_mode", "HTML");
+                formData.append(
+                    "caption",
+                    message
+                );
+
+                formData.append(
+                    "parse_mode",
+                    "HTML"
+                );
+
                 const response = await fetch(telegramUrl, {
                     method: "POST",
                     body: formData,
@@ -188,6 +234,11 @@ app.post("/api/orders", (req, res) => {
                 }
             }
 
+
+            // ===============================
+            // SUCCESS
+            // ===============================
+
             return res.json({
                 success: true,
                 orderId: orderId,
@@ -200,11 +251,16 @@ app.post("/api/orders", (req, res) => {
 
             return res.status(500).json({
                 success: false,
-                message: error.message
+                message: error.message || "Order submission failed."
             });
         }
     });
 });
+
+
+// ===============================
+// START SERVER
+// ===============================
 
 app.listen(PORT, () => {
     console.log(
