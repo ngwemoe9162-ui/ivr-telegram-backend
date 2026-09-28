@@ -120,49 +120,38 @@ app.post("/api/orders", (req, res) => {
             });
 
 
-            // ===============================
-            // TELEGRAM MESSAGE
-            // ===============================
+          // ===============================
+// TELEGRAM MESSAGE
+// ===============================
 
-            let message = "";
+let message = "";
 
-            message += "🎮 <b>NEW IVR TOP-UP ORDER</b>\n";
-            message += "━━━━━━━━━━━━━━━━━━\n\n";
+message += "🎮 <b>NEW IVR TOP-UP ORDER</b>\\n";
+message += "━━━━━━━━━━━━━━━━━━\\n\\n";
 
-            message += "🆔 <b>Order ID:</b> <code>";
-            message += escapeHtml(orderId);
-            message += "</code>\n\n";
+message += "🆔 <b>Order ID:</b> <code>" + escapeHtml(orderId) + "</code>\\n\\n";
 
-            message += "🎮 <b>Game:</b> ";
-            message += escapeHtml(game);
-            message += "\n\n";
+message += "🎮 <b>Game:</b> " + escapeHtml(game) + "\\n\\n";
 
-            message += "👤 <b>Player ID:</b> <code>";
-            message += escapeHtml(playerId);
-            message += "</code>\n";
+message += "👤 <b>Player ID:</b> <code>" + escapeHtml(playerId) + "</code>\\n";
 
-            if (zoneId) {
-                message += "🌐 <b>Zone ID:</b> <code>";
-                message += escapeHtml(zoneId);
-                message += "</code>\n";
-            }
+if (zoneId) {
+    message += "🌐 <b>Zone ID:</b> <code>" + escapeHtml(zoneId) + "</code>\\n";
+}
 
-            message += "\n";
+message += "\\n";
 
-            message += "💎 <b>Package:</b> ";
-            message += escapeHtml(packageName);
-            message += "\n\n";
+message += "💎 <b>Package:</b> " + escapeHtml(packageName) + "\\n\\n";
 
-            message += "💰 <b>Amount:</b> ";
-            message += escapeHtml(price);
-            message += " Ks\n\n";
+message += "💰 <b>Amount:</b> " + escapeHtml(price) + " Ks\\n\\n";
 
-            message += "💳 <b>Payment:</b> ";
-            message += escapeHtml(payment);
-            message += "\n\n";
+message += "💳 <b>Payment:</b> " + escapeHtml(payment) + "\\n\\n";
 
-            message += "👤 <b>Account Holder:</b> ";
-            message += escapeHtml(accountHolder);
-            message += "\n\n";
+message += "👤 <b>Account Holder:</b> " + escapeHtml(accountHolder) + "\\n\\n";
 
-            message += "📱 <b>
+message += "📱 <b>Payment Phone:</b> " + escapeHtml(targetPhone) + "\\n\\n";
+
+message += "🕐 <b>Date:</b> " + escapeHtml(dateTime) + "\\n\\n";
+
+message += "━━━━━━━━━━━━━━━━━━\\n";
+message += "📎 <i>Payment slip attached below.</i>";
