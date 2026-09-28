@@ -153,8 +153,8 @@ app.post("/api/orders", (req, res) => {
                     ? slip[0]
                     : slip;
 
-                const telegramUrl =
-                    https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto;
+               const telegramUrl =
+    https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto;
 
                 const formData = new FormData();
 
@@ -189,8 +189,7 @@ app.post("/api/orders", (req, res) => {
                 // ===============================
 
                 const telegramUrl =
-                    https://api.telegram.org/bot${BOT_TOKEN}/sendMessage;
-
+    https://api.telegram.org/bot${BOT_TOKEN}/sendMessage;
                 const response = await fetch(telegramUrl, {
                     method: "POST",
                     headers: {
