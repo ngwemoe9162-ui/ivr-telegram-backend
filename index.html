@@ -1,903 +1,312 @@
 <!DOCTYPE html>
-<html lang="my">
+<html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bhone Mann Chi - Game Item Shop</title>
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <style>
-        :root {
-            --brand-green: #00ff87;
-            --brand-green-dark: #60efff;
-            --accent-glow: rgba(0, 255, 135, 0.35);
-            --bg-deep: #050b08;
-            --glass-card: rgba(12, 28, 20, 0.75);
-            --glass-border: rgba(0, 255, 135, 0.25);
-            --glass-border-hover: rgba(0, 255, 135, 0.6);
-            --text-main: #f0fdf4;
-            --text-muted: #83a090;
-            --radius-lg: 20px;
-            --radius-md: 14px;
-            --transition-fast: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background: radial-gradient(circle at 80% 0%, #0d281a 0%, #050b08 70%);
-            background-attachment: fixed;
-            color: var(--text-main);
-            min-height: 100vh;
-            padding-bottom: 40px;
-            overflow-x: hidden;
-        }
-
-        /* Navbar */
-        header {
-            background: rgba(5, 11, 8, 0.9);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 16px 8%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .brand-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.25rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--brand-green), var(--brand-green-dark));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px var(--accent-glow);
-        }
-
-        .brand-logo-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(0, 255, 135, 0.1);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--brand-green);
-            font-size: 1.2rem;
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        /* Hero Banner */
-        .hero-banner {
-            max-width: 1200px;
-            margin: 25px auto;
-            padding: 0 20px;
-        }
-
-        .banner-card {
-            background: linear-gradient(135deg, rgba(0, 255, 135, 0.15), rgba(5, 11, 8, 0.95)), 
-                        url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200') center/cover no-repeat;
-            border-radius: var(--radius-lg);
-            padding: 35px;
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-            position: relative;
-        }
-
-        .banner-content {
-            position: relative;
-            z-index: 2;
-            max-width: 600px;
-        }
-
-        .banner-tag {
-            display: inline-block;
-            padding: 6px 14px;
-            background: rgba(0, 255, 135, 0.15);
-            border: 1px solid var(--brand-green);
-            color: var(--brand-green);
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .banner-card h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .banner-card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        /* Game Selector Tabs */
-        .game-tabs {
-            max-width: 1200px;
-            margin: 0 auto 25px;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        .tab-btn {
-            padding: 16px;
-            background: var(--glass-card);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-md);
-            color: var(--text-main);
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            backdrop-filter: blur(15px);
-            transition: var(--transition-fast);
-        }
-
-        .game-logo-img {
-            width: 45px;
-            height: 45px;
-            border-radius: 10px;
-            object-fit: cover;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-
-        .tab-btn:hover {
-            border-color: var(--glass-border-hover);
-            transform: translateY(-2px);
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, rgba(0, 255, 135, 0.25), rgba(12, 28, 20, 0.85));
-            border-color: var(--brand-green);
-            box-shadow: 0 0 25px var(--accent-glow);
-            color: #fff;
-        }
-
-        /* Container Layout */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .glass-panel {
-            background: var(--glass-card);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(20px);
-            border-radius: var(--radius-lg);
-            padding: 30px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-        }
-
-        .step-header {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding-bottom: 16px;
-        }
-
-        .step-number {
-            background: linear-gradient(135deg, var(--brand-green), var(--brand-green-dark));
-            color: #000;
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 1rem;
-            box-shadow: 0 0 12px var(--accent-glow);
-        }
-
-        .step-header h3 {
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-
-        /* Form Inputs */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 16px;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .input-group label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 16px 20px;
-            background: rgba(3, 8, 5, 0.6);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-md);
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-            transition: var(--transition-fast);
-        }
-
-        .input-group input:focus {
-            border-color: var(--brand-green);
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        /* Items Grid */
-        .items-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-            gap: 16px;
-        }
-
-        .item-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: var(--radius-md);
-            padding: 20px 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            position: relative;
-        }
-
-        .item-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--glass-border-hover);
-            background: rgba(0, 255, 135, 0.05);
-        }
-
-        .item-card.selected {
-            border-color: var(--brand-green);
-            background: linear-gradient(180deg, rgba(0, 255, 135, 0.15) 0%, rgba(12, 28, 20, 0.4) 100%);
-            box-shadow: 0 0 20px var(--accent-glow);
-        }
-
-        .item-icon-img {
-            width: 55px;
-            height: 55px;
-            margin: 0 auto 12px;
-            display: block;
-            object-fit: contain;
-            filter: drop-shadow(0 0 10px rgba(0,255,135,0.4));
-        }
-
-        .item-name {
-            font-weight: 700;
-            font-size: 0.95rem;
-            display: block;
-            margin-bottom: 6px;
-        }
-
-        .item-price {
-            font-size: 0.9rem;
-            color: var(--brand-green);
-            font-weight: 800;
-        }
-
-        /* Payment Grid */
-        .payment-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .payment-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .payment-card:hover {
-            border-color: var(--glass-border-hover);
-        }
-
-        .payment-card.selected {
-            border-color: var(--brand-green);
-            background: rgba(0, 255, 135, 0.15);
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .pay-icon-img {
-            width: 45px;
-            height: 45px;
-            border-radius: 10px;
-            object-fit: cover;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        .payment-card span {
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-
-        /* Payment Details Box */
-        .payment-details-box {
-            background: rgba(0, 255, 135, 0.08);
-            border: 1px solid var(--brand-green);
-            border-radius: var(--radius-md);
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 0 20px var(--accent-glow);
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .pay-info-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .pay-detail-logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            object-fit: cover;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        }
-
-        .pay-info-text h4 {
-            font-size: 1rem;
-            color: var(--brand-green);
-        }
-
-        .pay-info-text p {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: #fff;
-            letter-spacing: 0.5px;
-        }
-
-        .copy-btn {
-            background: var(--brand-green);
-            color: #000;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: 0.2s;
-        }
-
-        .copy-btn:hover {
-            filter: brightness(1.1);
-            transform: scale(1.05);
-        }
-
-        /* Action Button */
-        .checkout-btn {
-            width: 100%;
-            padding: 20px;
-            background: linear-gradient(135deg, var(--brand-green), var(--brand-green-dark));
-            border: none;
-            border-radius: var(--radius-md);
-            color: #030805;
-            font-weight: 800;
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: 0 0 30px var(--accent-glow);
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 10px;
-        }
-
-        .checkout-btn:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-        }
-
-        /* Help Center Section */
-        .help-center-panel {
-            margin-top: 30px;
-            background: linear-gradient(135deg, rgba(0, 136, 204, 0.15), rgba(12, 28, 20, 0.85));
-            border: 1px solid rgba(0, 136, 204, 0.4);
-            border-radius: var(--radius-lg);
-            padding: 25px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 136, 204, 0.2);
-        }
-
-        .help-center-title {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #0088cc;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .help-center-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 18px;
-        }
-
-        .telegram-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            background: #0088cc;
-            color: #fff;
-            padding: 14px 28px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 800;
-            font-size: 1.05rem;
-            box-shadow: 0 0 20px rgba(0, 136, 204, 0.5);
-            transition: var(--transition-fast);
-        }
-
-        .telegram-btn:hover {
-            background: #0099e6;
-            transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 0 30px rgba(0, 136, 204, 0.8);
-        }
-
-        .telegram-btn i {
-            font-size: 1.4rem;
-        }
-
-        /* Modal Overlay */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(15px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: var(--transition-fast);
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal-box {
-            background: var(--bg-deep);
-            border: 1px solid var(--brand-green);
-            border-radius: var(--radius-lg);
-            width: 90%;
-            max-width: 480px;
-            padding: 30px;
-            box-shadow: 0 0 50px var(--accent-glow);
-        }
-
-        .modal-title {
-            font-size: 1.4rem;
-            font-weight: 800;
-            margin-bottom: 20px;
-            color: var(--brand-green);
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 12px;
-        }
-
-        .receipt-list {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            margin-bottom: 25px;
-        }
-
-        .receipt-item {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.95rem;
-        }
-
-        .receipt-item span:first-child { color: var(--text-muted); }
-        .receipt-item span:last-child { font-weight: 700; color: #fff; }
-
-        .modal-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .btn-cancel {
-            padding: 14px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius-md);
-            color: #fff;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .btn-confirm {
-            padding: 14px;
-            background: var(--brand-green);
-            border: none;
-            border-radius: var(--radius-md);
-            color: #000;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        @media (max-width: 768px) {
-            .form-grid { grid-template-columns: 1fr; }
-            .game-tabs { grid-template-columns: 1fr; }
-            .items-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-            .payment-details-box { flex-direction: column; gap: 15px; text-align: center; }
-            .pay-info-left { flex-direction: column; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>IVR Instant Game Top-Up & Diamond Market</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>
+tailwind.config={darkMode:'class',theme:{extend:{colors:{brand:{cyan:'#06b6d4',emerald:'#10b981',purple:'#8b5cf6',dark:'#030712'}},fontFamily:{sans:['Inter','sans-serif']}}}};
+</script>
+<style>
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{font-family:Inter,sans-serif;background:#030712;color:#f3f4f6;overflow-x:hidden}
+.glass-card{background:rgba(17,24,39,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 32px rgba(0,0,0,.37)}
+.glass-card-interactive{transition:all .25s cubic-bezier(.4,0,.2,1)}
+.glass-card-interactive:hover{border-color:rgba(6,182,212,.4);transform:translateY(-2px);box-shadow:0 12px 28px -5px rgba(6,182,212,.25)}
+.glass-card-interactive.selected{border-color:#06b6d4;background:rgba(6,182,212,.12);box-shadow:0 0 20px rgba(6,182,212,.3)}
+.text-gradient{background:linear-gradient(135deg,#22d3ee 0%,#10b981 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.glow-cyan{box-shadow:0 0 25px rgba(6,182,212,.35)}
+::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:#030712}::-webkit-scrollbar-thumb{background:#1f2937;border-radius:4px}::-webkit-scrollbar-thumb:hover{background:#06b6d4}
+.safe-bottom{padding-bottom:max(1rem,env(safe-area-inset-bottom))}
+@media(max-width:640px){.mobile-stack{grid-template-columns:1fr!important}.mobile-tight{padding:1rem!important}.mobile-hide{display:none}.mobile-text{font-size:1.8rem}.package-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.payment-grid{grid-template-columns:1fr!important}}
+</style>
 </head>
-<body>
+<body class="bg-slate-950 text-gray-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
 
-    <!-- Header Navigation -->
-    <header>
-        <div class="brand-logo">
-            <div class="brand-logo-icon">
-                <i class="fa-solid fa-gamepad"></i>
-            </div>
-            <span>Bhone Mann Chi Game Item Shop</span>
-        </div>
-    </header>
+<header class="sticky top-0 z-40 glass-card border-b border-gray-800/80">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+<div class="flex items-center gap-3 min-w-0">
+<div class="w-10 h-10 shrink-0 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-cyan-500/30">
+<i class="fa-solid fa-bolt text-gray-950 text-xl font-black"></i>
+</div>
+<div class="min-w-0"><h1 class="text-xl font-black tracking-wider text-white">IVR <span class="text-xs bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded-full border border-cyan-500/30">TOP-UP</span></h1><p class="text-[10px] text-gray-400 -mt-1 font-medium truncate">Instant Game Diamond Market</p></div>
+</div>
+<nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+<a href="#heroSection" class="text-cyan-400 font-semibold">Home</a>
+<a href="#gameSection" class="text-gray-300 hover:text-white">Top-Up Games</a>
+<a href="#paymentSection" class="text-gray-300 hover:text-white">Payment Methods</a>
+<a href="#helpSection" class="text-gray-300 hover:text-white">Help Center</a>
+</nav>
+<div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Instant Auto-Delivery Active
+</div>
+</div>
+</header>
 
-    <!-- Hero Banner -->
-    <div class="hero-banner">
-        <div class="banner-card">
-            <div class="banner-content">
-                <span class="banner-tag">Instant Game Top-Up</span>
-                <h1>Direct Item Store</h1>
-                <p>Mobile Legends Diamonds နှင့် PUBG Mobile UC များကို မြန်ဆန်စိတ်ချစွာ တိုက်ရိုက်ဝယ်ယူနိုင်ပါသည်။</p>
-            </div>
-        </div>
-    </div>
+<main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 space-y-8">
 
-    <!-- Game Selector Tabs with Official Game Logos -->
-    <div class="game-tabs">
-        <button class="tab-btn active" onclick="switchGame('mlbb')">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIs9HkCgG211KUpS63vK4O1wzDUSc4M3uT4g&s" class="game-logo-img" alt="MLBB Logo">
-            Mobile Legends
-        </button>
-        <button class="tab-btn" onclick="switchGame('pubg')">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVw3C8N9q-Tz1y6yI5k_75U6-Q77E5z_W99w&s" class="game-logo-img" alt="PUBG Logo">
-            PUBG Mobile
-        </button>
-    </div>
+<section id="heroSection" class="relative rounded-3xl overflow-hidden glass-card p-5 md:p-10 border border-cyan-500/20">
+<div class="absolute -right-10 -bottom-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute -left-10 -top-10 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="relative z-10 grid md:grid-cols-2 gap-8 items-center">
+<div class="space-y-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500/20 to-emerald-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-bold uppercase tracking-wider"><i class="fa-solid fa-fire text-amber-400"></i> Fast & Reliable Gaming Store</span>
+<h2 class="text-3xl md:text-5xl font-black leading-tight text-white">Instant Game <span class="text-gradient">Top-Up</span> Market</h2>
+<p class="text-gray-400 text-sm md:text-base leading-relaxed">Refill Mobile Legends Diamonds and PUBG UC with secure direct top-up. Fast service and easy order submission.</p>
+<button onclick="scrollToSection('gameSection')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-gray-950 font-extrabold text-sm shadow-lg shadow-cyan-500/25 transition active:scale-95"><i class="fa-solid fa-gamepad"></i> Choose Package</button>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div onclick="quickSelectFeatured('mlbb','ml_5')" class="glass-card p-4 rounded-2xl border border-cyan-500/30 hover:border-cyan-400 cursor-pointer transition">
+<span class="text-[10px] bg-cyan-500/20 text-cyan-300 font-bold px-2 py-0.5 rounded">MLBB POPULAR</span>
+<h3 class="text-lg font-bold text-white mt-2">284 Diamonds</h3><p class="text-xs text-gray-400">Bonus +28 Diamonds</p><p class="text-emerald-400 font-black text-sm mt-2">15,500 Ks</p>
+</div>
+<div onclick="quickSelectFeatured('pubg','pubg_3')" class="glass-card p-4 rounded-2xl border border-amber-500/30 hover:border-amber-400 cursor-pointer transition">
+<span class="text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2 py-0.5 rounded">PUBG BEST</span>
+<h3 class="text-lg font-bold text-white mt-2">325 UC</h3><p class="text-xs text-gray-400">Instant Delivery</p><p class="text-emerald-400 font-black text-sm mt-2">18,000 Ks</p>
+</div>
+</div>
+</div>
+</section>
 
-    <!-- Main Content -->
-    <div class="container">
-        
-        <!-- Step 1: User Account Inputs -->
-        <div class="glass-panel">
-            <div class="step-header">
-                <div class="step-number">1</div>
-                <h3>Player Account Details ထည့်ပါ</h3>
-            </div>
-            <div class="form-grid" id="account-inputs">
-                <!-- Javascript Dynamic Loading -->
-            </div>
-        </div>
+<section id="gameSection" class="grid lg:grid-cols-3 gap-8">
+<div class="lg:col-span-2 space-y-8">
 
-        <!-- Step 2: Package Selection -->
-        <div class="glass-panel">
-            <div class="step-header">
-                <div class="step-number">2</div>
-                <h3>ဝယ်ယူလိုသည့် Package ရွေးချယ်ပါ</h3>
-            </div>
-            <div class="items-grid" id="items-container">
-                <!-- Javascript Dynamic Loading -->
-            </div>
-        </div>
+<div class="glass-card rounded-2xl p-5 md:p-6 border border-gray-800">
+<div class="flex items-center gap-3 mb-4 border-b border-gray-800 pb-3"><span class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 font-bold flex items-center justify-center text-sm border border-cyan-500/30">1</span><h3 class="text-lg font-bold text-white">Select Game</h3></div>
+<div class="grid grid-cols-2 gap-3 md:gap-4">
+<div id="tab-mlbb" onclick="switchGame('mlbb')" class="game-tab active cursor-pointer p-3 md:p-4 rounded-xl border border-cyan-500 bg-cyan-500/10 flex items-center gap-3 transition">
+<div class="w-11 h-11 shrink-0 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center text-white text-xl"><i class="fa-solid fa-gem"></i></div><div><h4 class="font-bold text-white text-sm">Mobile Legends</h4><p class="text-xs text-gray-400">Diamonds & Passes</p></div>
+</div>
+<div id="tab-pubg" onclick="switchGame('pubg')" class="game-tab cursor-pointer p-3 md:p-4 rounded-xl border border-gray-800 flex items-center gap-3 transition">
+<div class="w-11 h-11 shrink-0 rounded-lg bg-gradient-to-br from-amber-600 to-red-700 flex items-center justify-center text-white text-xl"><i class="fa-solid fa-crosshairs"></i></div><div><h4 class="font-bold text-white text-sm">PUBG Mobile</h4><p class="text-xs text-gray-400">Unknown Cash (UC)</p></div>
+</div>
+</div></div>
 
-        <!-- Step 3: Payment Selection & Phone Number Display -->
-        <div class="glass-panel">
-            <div class="step-header">
-                <div class="step-number">3</div>
-                <h3>ငွေပေးချေမှုစနစ် ရွေးချယ်ပါ</h3>
-            </div>
-            <div class="payment-grid" id="payment-container">
-                <!-- Payment Logos Dynamic Loading -->
-            </div>
+<div class="glass-card rounded-2xl p-5 md:p-6 border border-gray-800">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 border-b border-gray-800 pb-3">
+<div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 font-bold flex items-center justify-center text-sm border border-cyan-500/30">2</span><h3 class="text-lg font-bold text-white">Account Details</h3></div>
+<span id="idGuideText" class="text-xs text-gray-400">Enter your Mobile Legends User ID and Zone ID.</span>
+</div>
+<div id="mlbbInputs" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div><label class="block text-xs font-semibold text-gray-400 mb-1">User ID</label><input type="number" id="mlbbUserId" oninput="validatePlayerInput()" placeholder="e.g. 12345678" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500"></div>
+<div><label class="block text-xs font-semibold text-gray-400 mb-1">Zone ID</label><input type="number" id="mlbbZoneId" oninput="validatePlayerInput()" placeholder="e.g. 1234" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500"></div>
+</div>
+<div id="pubgInputs" class="hidden"><label class="block text-xs font-semibold text-gray-400 mb-1">PUBG Character ID</label><input type="number" id="pubgUserId" oninput="validatePlayerInput()" placeholder="e.g. 5123456789" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500"></div>
+<div id="idCheckStatus" class="hidden mt-3 items-center gap-2 text-xs text-emerald-400 font-medium"><i class="fa-solid fa-circle-check"></i> Player ID format looks ready!</div>
+</div>
 
-            <!-- Selected Payment Phone Info Box -->
-            <div class="payment-details-box" id="payment-details-box">
-                <div class="pay-info-left">
-                    <img id="pay-detail-img" class="pay-detail-logo" src="" alt="Pay Logo">
-                    <div class="pay-info-text">
-                        <h4 id="pay-detail-name">KBZ Pay Account</h4>
-                        <p id="pay-detail-phone">09767906490 (Bhone Mann Chi)</p>
-                    </div>
-                </div>
-                <button class="copy-btn" onclick="copyPhoneNumber()">
-                    <i class="fa-regular fa-copy"></i> Copy Number
-                </button>
-            </div>
-        </div>
+<div class="glass-card rounded-2xl p-5 md:p-6 border border-gray-800">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 border-b border-gray-800 pb-3">
+<div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 font-bold flex items-center justify-center text-sm border border-cyan-500/30">3</span><h3 id="packageSectionTitle" class="text-lg font-bold text-white">Select MLBB Diamond Package</h3></div>
+<div class="relative w-full sm:w-48"><input type="text" id="searchInput" onkeyup="filterPackages()" placeholder="Search amount..." class="w-full bg-gray-900/90 border border-gray-800 rounded-lg pl-8 pr-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500"><i class="fa-solid fa-magnifying-glass absolute left-2.5 top-3 text-gray-500 text-xs"></i></div>
+</div>
+<div id="packageGrid" class="package-grid grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+</div>
 
-        <!-- Submit Button -->
-        <button class="checkout-btn" onclick="openCheckoutModal()">
-            <i class="fa-solid fa-cart-shopping"></i> တိုက်ရိုက်ဝယ်ယူမည်
-        </button>
+<div id="paymentSection" class="glass-card rounded-2xl p-5 md:p-6 border border-gray-800">
+<div class="flex items-center gap-3 mb-4 border-b border-gray-800 pb-3"><span class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 font-bold flex items-center justify-center text-sm border border-cyan-500/30">4</span><h3 class="text-lg font-bold text-white">Select Payment Method</h3></div>
+<div class="payment-grid grid grid-cols-3 gap-3">
+<div id="pay-KBZPay" onclick="selectPayment('KBZPay')" class="payment-card glass-card-interactive rounded-xl p-3 border border-gray-800 cursor-pointer text-center"><div class="w-10 h-10 mx-auto rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-400 flex items-center justify-center text-lg font-bold">K</div><span class="text-xs font-bold text-gray-200">KBZPay</span></div>
+<div id="pay-WavePay" onclick="selectPayment('WavePay')" class="payment-card glass-card-interactive rounded-xl p-3 border border-gray-800 cursor-pointer text-center"><div class="w-10 h-10 mx-auto rounded-lg bg-yellow-500/20 border border-yellow-500/30 text-yellow-400 flex items-center justify-center text-lg font-bold">W</div><span class="text-xs font-bold text-gray-200">WavePay</span></div>
+<div id="pay-AyaPay" onclick="selectPayment('AyaPay')" class="payment-card glass-card-interactive rounded-xl p-3 border border-gray-800 cursor-pointer text-center"><div class="w-10 h-10 mx-auto rounded-lg bg-red-600/20 border border-red-500/30 text-red-400 flex items-center justify-center text-lg font-bold">A</div><span class="text-xs font-bold text-gray-200">AyaPay</span></div>
+</div>
+<div id="paymentInstructionsBox" class="hidden mt-6 p-5 rounded-xl bg-slate-900/90 border border-cyan-500/40 space-y-4">
+<div class="flex items-center justify-between border-b border-gray-800 pb-3"><span class="text-xs uppercase font-extrabold text-cyan-400 tracking-wider">Payment Instructions</span><span id="selectedPayNameTag" class="text-xs font-bold text-white bg-cyan-500/20 px-2.5 py-0.5 rounded-full border border-cyan-500/30">--</span></div>
+<div class="grid sm:grid-cols-2 gap-4 text-sm"><div><span class="text-xs text-gray-400">Account Name</span><p class="text-white font-bold text-base">Daw July Aung</p></div><div><span class="text-xs text-gray-400">Phone Number</span><div class="flex flex-wrap items-center gap-2"><span id="paymentPhoneNum" class="text-emerald-400 font-mono font-black text-lg">09960669761</span><button onclick="copyPhoneNumber()" class="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 text-xs font-bold border border-cyan-500/40"><i class="fa-regular fa-copy"></i> Copy</button></div></div></div>
+<div class="pt-2 border-t border-gray-800"><label class="block text-xs font-semibold text-gray-300 mb-2"><i class="fa-solid fa-file-invoice-dollar text-cyan-400 mr-1"></i> Upload Payment Slip *</label>
+<div class="relative border-2 border-dashed border-gray-700 hover:border-cyan-500/50 rounded-xl p-4 text-center cursor-pointer bg-gray-950/40" id="dropZone">
+<input type="file" id="slipInput" accept="image/png,image/jpeg,image/jpg" onchange="handleSlipSelect(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+<div id="uploadPrompt" class="space-y-1"><i class="fa-solid fa-cloud-arrow-up text-2xl text-cyan-400"></i><p class="text-xs text-gray-300 font-semibold">Click or drag & drop payment screenshot here</p><p class="text-[10px] text-gray-500">PNG, JPG, JPEG • Max 8 MB</p></div>
+<div id="uploadPreview" class="hidden flex flex-col items-center gap-2"><img id="previewImage" src="" alt="Slip Preview" class="max-h-36 max-w-full rounded-lg border border-cyan-500/50 shadow"><span id="fileName" class="text-xs text-emerald-400 font-semibold"></span><span class="text-[10px] text-gray-400">Click to change screenshot</span></div>
+</div></div></div>
+</div>
+</div>
 
-        <!-- Help Center Section (Telegram Button Integration) -->
-        <div class="help-center-panel">
-            <div class="help-center-title">
-                <i class="fa-solid fa-headset"></i> Help Center & Customer Support
-            </div>
-            <p class="help-center-desc">အကူအညီလိုအပ်ပါက သို့မဟုတ် မေးမြန်းလိုပါက Telegram မှတစ်ဆင့် တိုက်ရိုက်ဆက်သွယ်နိုင်ပါသည်။</p>
-            <a href="https://t.me/megumiluxekunn" target="_blank" class="telegram-btn">
-                <i class="fa-brands fa-telegram"></i> @megumiluxekunn
-            </a>
-        </div>
+<div class="lg:col-span-1">
+<div class="sticky top-24 glass-card rounded-2xl p-5 md:p-6 border border-gray-800 space-y-6">
+<h3 class="text-lg font-extrabold text-white border-b border-gray-800 pb-3 flex items-center gap-2"><i class="fa-solid fa-receipt text-cyan-400"></i> Order Summary</h3>
+<div class="space-y-3 text-sm">
+<div class="flex justify-between gap-4 text-gray-400"><span>Selected Game:</span><span id="sumGame" class="font-semibold text-white text-right">Mobile Legends</span></div>
+<div class="flex justify-between gap-4 text-gray-400"><span>Player ID:</span><span id="sumId" class="font-mono font-semibold text-cyan-400 text-right">--</span></div>
+<div class="flex justify-between gap-4 text-gray-400"><span>Selected Package:</span><span id="sumPkg" class="font-semibold text-white text-right">None Selected</span></div>
+<div class="flex justify-between gap-4 text-gray-400"><span>Payment Method:</span><span id="sumPay" class="font-semibold text-amber-400 text-right">None Selected</span></div>
+<div class="pt-3 border-t border-gray-800 flex justify-between items-center"><span class="font-bold text-gray-200">Total Price:</span><span id="sumPrice" class="text-xl font-black text-emerald-400">0 Ks</span></div>
+</div>
+<button id="checkoutBtn" disabled onclick="openCheckoutModal()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-gray-950 font-black text-sm shadow-lg shadow-cyan-500/20 disabled:opacity-40 disabled:cursor-not-allowed transition active:scale-95">Proceed to Top-Up</button>
+<div class="text-[11px] text-gray-500 text-center space-y-1"><p><i class="fa-solid fa-shield-halved text-emerald-400"></i> Secure order submission</p><p>Order will be forwarded to our support group.</p></div>
+</div></div>
+</section>
 
-    </div>
+<section id="helpSection" class="glass-card rounded-2xl p-5 md:p-6 border border-cyan-500/20">
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+<div><span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Help Center</span><h3 class="text-xl md:text-2xl font-black text-white mt-1">Need help with your top-up?</h3><p class="text-sm text-gray-400 mt-2">If you have a payment, order, or game ID problem, contact us directly on Telegram.</p></div>
+<a href="https://t.me/iveriselkun" target="_blank" rel="noopener noreferrer" class="shrink-0 px-5 py-3 rounded-xl bg-[#229ED9] hover:brightness-110 text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20"><i class="fa-brands fa-telegram text-xl"></i> @iveriselkun</a>
+</div>
+<div class="grid sm:grid-cols-3 gap-3 mt-5">
+<div class="rounded-xl bg-gray-950/60 border border-gray-800 p-4"><i class="fa-solid fa-receipt text-cyan-400"></i><h4 class="font-bold text-white mt-2 text-sm">Order Help</h4><p class="text-xs text-gray-500 mt-1">Send your Order ID when asking about an order.</p></div>
+<div class="rounded-xl bg-gray-950/60 border border-gray-800 p-4"><i class="fa-solid fa-money-bill-transfer text-emerald-400"></i><h4 class="font-bold text-white mt-2 text-sm">Payment Help</h4><p class="text-xs text-gray-500 mt-1">Keep your payment screenshot until the order is completed.</p></div>
+<div class="rounded-xl bg-gray-950/60 border border-gray-800 p-4"><i class="fa-solid fa-gamepad text-amber-400"></i><h4 class="font-bold text-white mt-2 text-sm">Game ID Help</h4><p class="text-xs text-gray-500 mt-1">Check your User ID and Zone ID before submitting.</p></div>
+</div>
+</section>
+</main>
 
-    <!-- Receipt Confirmation Modal -->
-    <div class="modal-overlay" id="checkout-modal">
-        <div class="modal-box">
-            <div class="modal-title">Order Confirmation</div>
-            <div class="receipt-list">
-                <div class="receipt-item">
-                    <span>Selected Game:</span>
-                    <span id="receipt-game">-</span>
-                </div>
-                <div class="receipt-item">
-                    <span>Account ID:</span>
-                    <span id="receipt-account">-</span>
-                </div>
-                <div class="receipt-item">
-                    <span>Item Package:</span>
-                    <span id="receipt-package">-</span>
-                </div>
-                <div class="receipt-item">
-                    <span>Payment Method:</span>
-                    <span id="receipt-payment">-</span>
-                </div>
-                <div class="receipt-item">
-                    <span>Send Money To:</span>
-                    <span style="color: var(--brand-green);">09767906490</span>
-                </div>
-                <div class="receipt-item" style="border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px; margin-top: 5px;">
-                    <span>Total Price:</span>
-                    <span id="receipt-price" style="color: var(--brand-green); font-size: 1.1rem;">-</span>
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeCheckoutModal()">မဝယ်သေးပါ</button>
-                <button class="btn-confirm" onclick="processOrder()">အတည်ပြုမည်</button>
-            </div>
-        </div>
-    </div>
+<footer class="border-t border-gray-900 bg-gray-950 py-6 text-center text-xs text-gray-500 safe-bottom"><p>© 2026 IVR Instant Game Top-Up. All rights reserved.</p></footer>
 
-    <!-- Application Script Logic -->
-    <script>
-        let currentGame = 'mlbb';
-        let selectedPackage = null;
-        let selectedPayment = null;
+<div id="checkoutModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+<div class="glass-card max-w-md w-full max-h-[90vh] overflow-y-auto rounded-2xl p-5 md:p-6 border border-cyan-500/40 space-y-5">
+<div class="flex items-center justify-between border-b border-gray-800 pb-3"><h3 class="text-lg font-black text-white"><i class="fa-solid fa-paper-plane text-cyan-400"></i> Confirm Order</h3><button onclick="closeModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button></div>
+<div class="space-y-2.5 text-xs bg-slate-900/80 p-4 rounded-xl border border-gray-800">
+<div class="flex justify-between gap-3"><span class="text-gray-400">Order ID:</span><span id="modalOrderId" class="font-mono font-bold text-cyan-400">--</span></div>
+<div class="flex justify-between gap-3"><span class="text-gray-400">Game:</span><span id="modalGame" class="font-bold text-white">--</span></div>
+<div class="flex justify-between gap-3"><span class="text-gray-400">Target ID:</span><span id="modalId" class="font-mono font-bold text-cyan-400 text-right">--</span></div>
+<div class="flex justify-between gap-3"><span class="text-gray-400">Package:</span><span id="modalPkg" class="font-bold text-white text-right">--</span></div>
+<div class="flex justify-between gap-3"><span class="text-gray-400">Payment:</span><span id="modalPay" class="font-bold text-amber-400">--</span></div>
+<div class="flex justify-between border-t border-gray-800 pt-2 text-sm"><span class="font-bold text-white">Amount:</span><span id="modalPrice" class="font-black text-emerald-400">--</span></div>
+</div>
+<div id="modalStatusMsg" class="hidden text-xs text-center py-2 px-3 rounded-lg"></div>
+<div class="flex gap-3 pt-2"><button onclick="closeModal()" class="flex-1 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 font-bold text-xs text-gray-300">Cancel</button><button id="confirmSendBtn" onclick="sendOrderToTelegram()" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 font-black text-xs text-gray-950 flex items-center justify-center gap-2"><i class="fa-solid fa-check"></i> Submit Order</button></div>
+</div></div>
 
-        // Shared Phone Number
-        const storePhoneNumber = '09767906490';
-        const storeAccountName = 'Bhone Mann Chi';
+<script>
+/*
+ IMPORTANT:
+ Do NOT put your Telegram bot token in this HTML.
+ Set this URL to your own secure backend/Cloudflare Worker/Server endpoint.
+ The backend should receive JSON + slip image and send it to your Telegram group.
+*/
+const ORDER_API_URL = "/api/orders";
 
-        // Official High-Quality Diamond & UC PNGs
-        const mlbbDiamondImg = 'https://s3.ap-southeast-1.amazonaws.com/cdn.smile.one/global/assets/app/mobilelegends/diamonds.png';
-        const pubgUcImg = 'https://s3.ap-southeast-1.amazonaws.com/cdn.smile.one/global/assets/app/pubg/uc.png';
+const gamePackages={
+mlbb:[
+{id:'ml_1',name:'86 Diamonds',bonus:'+8 Bonus',price:4700,icon:'fa-solid fa-gem'},
+{id:'ml_2',name:'172 Diamonds',bonus:'+16 Bonus',price:9400,icon:'fa-solid fa-gem'},
+{id:'ml_3',name:'257 Diamonds',bonus:'+25 Bonus',price:14000,icon:'fa-solid fa-gem',highlight:true},
+{id:'ml_5',name:'284 Diamonds',bonus:'+28 Bonus',price:15500,icon:'fa-solid fa-gem',highlight:true},
+{id:'ml_4',name:'344 Diamonds',bonus:'+30 Bonus',price:18500,icon:'fa-solid fa-gem'},
+{id:'ml_6',name:'429 Diamonds',bonus:'+43 Bonus',price:23000,icon:'fa-solid fa-gem'},
+{id:'ml_7',name:'706 Diamonds',bonus:'+87 Bonus',price:37000,icon:'fa-solid fa-gem'},
+{id:'ml_8',name:'Weekly Diamond Pass',bonus:'210 Total',price:6200,icon:'fa-solid fa-crown',highlight:true}],
+pubg:[
+{id:'pubg_1',name:'60 UC',bonus:'Instant',price:3500,icon:'fa-solid fa-crosshairs'},
+{id:'pubg_2',name:'180 UC',bonus:'Instant',price:10200,icon:'fa-solid fa-crosshairs'},
+{id:'pubg_3',name:'325 UC',bonus:'+25 Bonus',price:18000,icon:'fa-solid fa-crosshairs',highlight:true},
+{id:'pubg_4',name:'660 UC',bonus:'+60 Bonus',price:35000,icon:'fa-solid fa-crosshairs',highlight:true},
+{id:'pubg_5',name:'1800 UC',bonus:'+300 Bonus',price:95000,icon:'fa-solid fa-crosshairs'}]
+};
 
-        // Master Items Catalog
-        const storeCatalog = {
-            mlbb: [
-                { id: 'ml1', name: '86 Diamonds', price: 3800, icon: mlbbDiamondImg },
-                { id: 'ml2', name: '172 Diamonds', price: 7500, icon: mlbbDiamondImg },
-                { id: 'ml3', name: '257 Diamonds', price: 11000, icon: mlbbDiamondImg },
-                { id: 'ml4', name: '706 Diamonds', price: 30000, icon: mlbbDiamondImg },
-                { id: 'ml5', name: 'Weekly Diamond Pass', price: 5500, icon: 'https://s3.ap-southeast-1.amazonaws.com/cdn.smile.one/global/assets/app/mobilelegends/pass.png' },
-                { id: 'ml6', name: '2195 Diamonds', price: 92000, icon: mlbbDiamondImg }
-            ],
-            pubg: [
-                { id: 'pb1', name: '60 UC', price: 2800, icon: pubgUcImg },
-                { id: 'pb2', name: '325 UC', price: 13500, icon: pubgUcImg },
-                { id: 'pb3', name: '660 UC', price: 26500, icon: pubgUcImg },
-                { id: 'pb4', name: '1800 UC', price: 68000, icon: pubgUcImg },
-                { id: 'pb5', name: '3850 UC', price: 135000, icon: pubgUcImg }
-            ]
-        };
+let state={currentGame:'mlbb',selectedPackage:null,selectedPayment:null,userId:'',zoneId:'',slipFile:null,orderId:null};
 
-        // Official Payment Logos
-        const paymentGateways = [
-            { name: 'KBZ Pay', key: 'kpay', icon: 'https://play-lh.googleusercontent.com/492G8A4G8cE1s6J0N4G8K1d3z9U5_8y7m' },
-            { name: 'WavePay', key: 'wave', icon: 'https://play-lh.googleusercontent.com/w1i1K2I1yH1N_64WJ7B3W47G2a4Qf-5yL345' },
-            { name: 'AYA Pay', key: 'aya', icon: 'https://play-lh.googleusercontent.com/a4qG9gLp2h_J78G01aR7Yg_z' },
-            { name: 'CB Pay', key: 'cb', icon: 'https://play-lh.googleusercontent.com/K535d8u3_X22g_7n' }
-        ];
+window.addEventListener('load',()=>renderPackages());
 
-        // Switch Active Game
-        function switchGame(gameKey) {
-            currentGame = gameKey;
-            
-            document.querySelectorAll('.tab-btn').forEach((btn, index) => {
-                btn.classList.toggle('active', (gameKey === 'mlbb' && index === 0) || (gameKey === 'pubg' && index === 1));
-            });
+function switchGame(gameKey){
+state.currentGame=gameKey;state.selectedPackage=null;
+const ml=document.getElementById('tab-mlbb'),pg=document.getElementById('tab-pubg');
+const active="game-tab active cursor-pointer p-3 md:p-4 rounded-xl border border-cyan-500 bg-cyan-500/10 flex items-center gap-3 transition";
+const inactive="game-tab cursor-pointer p-3 md:p-4 rounded-xl border border-gray-800 flex items-center gap-3 transition";
+if(gameKey==='mlbb'){
+ml.className=active;pg.className=inactive;document.getElementById('mlbbInputs').classList.remove('hidden');document.getElementById('pubgInputs').classList.add('hidden');
+document.getElementById('idGuideText').innerText='Enter your Mobile Legends User ID and Zone ID.';
+document.getElementById('packageSectionTitle').innerText='Select MLBB Diamond Package';document.getElementById('sumGame').innerText='Mobile Legends';
+}else{
+pg.className=active;ml.className=inactive;document.getElementById('mlbbInputs').classList.add('hidden');document.getElementById('pubgInputs').classList.remove('hidden');
+document.getElementById('idGuideText').innerText='Enter your PUBG Mobile Character ID.';
+document.getElementById('packageSectionTitle').innerText='Select PUBG UC Package';document.getElementById('sumGame').innerText='PUBG Mobile';
+}
+validatePlayerInput();renderPackages();updateSummary();
+}
+function renderPackages(searchQuery=''){
+const grid=document.getElementById('packageGrid');grid.innerHTML='';
+const packages=gamePackages[state.currentGame].filter(p=>p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+if(!packages.length){grid.innerHTML='<div class="col-span-full text-center py-6 text-gray-500 text-xs">No packages found</div>';return;}
+packages.forEach(pkg=>{
+const selected=state.selectedPackage&&state.selectedPackage.id===pkg.id;
+const card=document.createElement('div');card.onclick=()=>selectPackage(pkg);
+card.className=`glass-card glass-card-interactive rounded-xl p-3 cursor-pointer relative flex flex-col justify-between border ${selected?'selected':'border-gray-800'}`;
+card.innerHTML=`${pkg.highlight?'<span class="absolute -top-2 -right-1 bg-gradient-to-r from-amber-500 to-red-500 text-gray-950 font-black text-[9px] uppercase px-1.5 py-0.5 rounded-md">HOT</span>':''}
+<div class="space-y-1.5"><div class="w-7 h-7 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-sm"><i class="${pkg.icon}"></i></div>
+<div><h4 class="text-white font-bold text-xs leading-snug">${pkg.name}</h4><span class="text-[10px] text-cyan-400 font-semibold">${pkg.bonus}</span></div></div>
+<div class="mt-3 pt-2 border-t border-gray-800/80 flex items-center justify-between"><span class="text-emerald-400 font-black text-xs">${pkg.price.toLocaleString()} Ks</span><div class="w-4 h-4 rounded-full border border-gray-700 flex items-center justify-center ${selected?'bg-cyan-500 border-cyan-500 text-gray-950':''}">${selected?'<i class="fa-solid fa-check text-[9px]"></i>':''}</div></div>`;
+grid.appendChild(card);
+});
+}
+function filterPackages(){renderPackages(document.getElementById('searchInput').value)}
+function selectPackage(pkg){state.selectedPackage=pkg;renderPackages(document.getElementById('searchInput').value);updateSummary()}
+function quickSelectFeatured(game,pkgId){switchGame(game);const p=gamePackages[game].find(x=>x.id===pkgId);if(p){selectPackage(p);scrollToSection('gameSection')}}
+function selectPayment(name){
+state.selectedPayment=name;document.querySelectorAll('.payment-card').forEach(c=>c.classList.remove('selected'));
+document.getElementById(`pay-${name}`)?.classList.add('selected');
+document.getElementById('paymentInstructionsBox').classList.remove('hidden');document.getElementById('selectedPayNameTag').innerText=name;updateSummary();
+}
+function copyPhoneNumber(){navigator.clipboard?.writeText(document.getElementById('paymentPhoneNum').innerText).then(()=>showToast('Payment number copied')).catch(()=>showToast('Please copy the number manually'))}
+function handleSlipSelect(e){
+const file=e.target.files[0];if(!file)return;
+if(file.size>8*1024*1024){alert('Please select a payment screenshot smaller than 8 MB.');e.target.value='';return}
+state.slipFile=file;const r=new FileReader();r.onload=x=>{document.getElementById('previewImage').src=x.target.result;document.getElementById('fileName').innerText=file.name;document.getElementById('uploadPrompt').classList.add('hidden');document.getElementById('uploadPreview').classList.remove('hidden');updateSummary()};r.readAsDataURL(file);
+}
+function validatePlayerInput(){
+const box=document.getElementById('idCheckStatus');
+if(state.currentGame==='mlbb'){state.userId=document.getElementById('mlbbUserId').value.trim();state.zoneId=document.getElementById('mlbbZoneId').value.trim()}
+else{state.userId=document.getElementById('pubgUserId').value.trim();state.zoneId=''}
+const valid=state.currentGame==='mlbb'?state.userId.length>=6&&state.zoneId.length>=3:state.userId.length>=6;
+box.classList.toggle('hidden',!valid);box.classList.toggle('flex',valid);updateSummary();
+}
+function updateSummary(){
+document.getElementById('sumPkg').innerText=state.selectedPackage?.name||'None Selected';
+document.getElementById('sumPrice').innerText=state.selectedPackage?state.selectedPackage.price.toLocaleString()+' Ks':'0 Ks';
+document.getElementById('sumId').innerText=state.userId?(state.currentGame==='mlbb'?`${state.userId} (${state.zoneId||'?'})`:state.userId):'--';
+document.getElementById('sumPay').innerText=state.selectedPayment||'None Selected';
+const valid=state.currentGame==='mlbb'?state.userId.length>=6&&state.zoneId.length>=3:state.userId.length>=6;
+document.getElementById('checkoutBtn').disabled=!(state.selectedPackage&&state.selectedPayment&&valid&&state.slipFile);
+}
+function scrollToSection(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'})}
+function makeOrderId(){const d=new Date(),s=String(d.getTime()).slice(-6);return`IVR-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${s}`}
 
-            renderAccountInputs();
-            renderPackages();
-        }
+function openCheckoutModal(){
+if(!state.slipFile){alert('Please upload your payment receipt screenshot before proceeding.');return}
+state.orderId=makeOrderId();
+document.getElementById('modalOrderId').innerText=state.orderId;
+document.getElementById('modalGame').innerText=state.currentGame==='mlbb'?'Mobile Legends: Bang Bang':'PUBG Mobile';
+document.getElementById('modalPkg').innerText=state.selectedPackage.name;
+document.getElementById('modalId').innerText=state.currentGame==='mlbb'?`${state.userId} (Zone: ${state.zoneId})`:state.userId;
+document.getElementById('modalPay').innerText=state.selectedPayment;
+document.getElementById('modalPrice').innerText=state.selectedPackage.price.toLocaleString()+' Ks';
+document.getElementById('modalStatusMsg').classList.add('hidden');
+document.getElementById('checkoutModal').classList.remove('hidden');document.getElementById('checkoutModal').classList.add('flex');
+}
+function closeModal(){document.getElementById('checkoutModal').classList.add('hidden');document.getElementById('checkoutModal').classList.remove('flex')}
 
-        // Render Inputs based on Game
-        function renderAccountInputs() {
-            const container = document.getElementById('account-inputs');
-            if (currentGame === 'mlbb') {
-                container.innerHTML = `
-                    <div class="input-group">
-                        <label>User ID</label>
-                        <input type="text" id="input-userid" placeholder="e.g. 12345678" autocomplete="off">
-                    </div>
-                    <div class="input-group">
-                        <label>Zone ID</label>
-                        <input type="text" id="input-zoneid" placeholder="e.g. 1234" autocomplete="off">
-                    </div>
-                `;
-            } else {
-                container.innerHTML = `
-                    <div class="input-group" style="grid-column: span 2;">
-                        <label>Character UID</label>
-                        <input type="text" id="input-userid" placeholder="e.g. 5123456789" autocomplete="off">
-                    </div>
-                `;
-            }
-        }
-
-        // Render Item Catalog Grid
-        function renderPackages() {
-            const container = document.getElementById('items-container');
-            const items = storeCatalog[currentGame];
-            selectedPackage = items[0]; 
-
-            container.innerHTML = items.map((item, index) => `
-                <div class="item-card ${index === 0 ? 'selected' : ''}" onclick="selectPackage(this, '${item.id}')">
-                    <img src="${item.icon}" class="item-icon-img" alt="Icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2092/2092751.png'">
-                    <span class="item-name">${item.name}</span>
-                    <span class="item-price">${item.price.toLocaleString()} Ks</span>
-                </div>
-            `).join('');
-        }
-
-        // Render Payment Gateway Logos
-        function renderPayments() {
-            const container = document.getElementById('payment-container');
-            selectedPayment = paymentGateways[0];
-
-            container.innerHTML = paymentGateways.map((gw, index) => `
-                <div class="payment-card ${index === 0 ? 'selected' : ''}" onclick="selectPayment(this, '${gw.key}')">
-                    <img src="${gw.icon}" class="pay-icon-img" alt="${gw.name}" onerror="this.src='https://via.placeholder.com/45/00ff87/000?text=${gw.name}'">
-                    <span>${gw.name}</span>
-                </div>
-            `).join('');
-
-            updatePaymentDetailsBox();
-        }
-
-        function selectPackage(cardElement, itemId) {
-            document.querySelectorAll('.item-card').forEach(c => c.classList.remove('selected'));
-            cardElement.classList.add('selected');
-            selectedPackage = storeCatalog[currentGame].find(i => i.id === itemId);
-        }
-
-        function selectPayment(cardElement, paymentKey) {
-            document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('selected'));
-            cardElement.classList.add('selected');
-            selectedPayment = paymentGateways.find(p => p.key === paymentKey);
-            
-            updatePaymentDetailsBox();
-        }
-
-        // Update Payment Box Phone Details
-        function updatePaymentDetailsBox() {
-            document.getElementById('pay-detail-img').src = selectedPayment.icon;
-            document.getElementById('pay-detail-name').innerText = `${selectedPayment.name} Account`;
-            document.getElementById('pay-detail-phone').innerText = `${storePhoneNumber} (${storeAccountName})`;
-        }
-
-        // Copy Phone Number Action
-        function copyPhoneNumber() {
-            navigator.clipboard.writeText(storePhoneNumber);
-            alert(`ဖုန်းနံပါတ် ${storePhoneNumber} ကို Copy ကူးလိုက်ပါပြီ။`);
-        }
-
-        // Modal Action Handlers
-        function openCheckoutModal() {
-            const userId = document.getElementById('input-userid').value.trim();
-            const zoneId = document.getElementById('input-zoneid') ? document.getElementById('input-zoneid').value.trim() : '';
-
-            if (!userId || (currentGame === 'mlbb' && !zoneId)) {
-                alert('ကျေးဇူးပြု၍ Account ID အချက်အလက်များကို မှန်ကန်စွာ ဖြည့်သွင်းပေးပါ။');
-                return;
-            }
-
-            document.getElementById('receipt-game').innerText = currentGame === 'mlbb' ? 'Mobile Legends' : 'PUBG Mobile';
-            document.getElementById('receipt-account').innerText = currentGame === 'mlbb' ? `${userId} (${zoneId})` : userId;
-            document.getElementById('receipt-package').innerText = selectedPackage.name;
-            document.getElementById('receipt-payment').innerText = selectedPayment.name;
-            document.getElementById('receipt-price').innerText = `${selectedPackage.price.toLocaleString()} Ks`;
-
-            document.getElementById('checkout-modal').classList.add('active');
-        }
-
-        function closeCheckoutModal() {
-            document.getElementById('checkout-modal').classList.remove('active');
-        }
-
-        function processOrder() {
-            closeCheckoutModal();
-            alert(`အော်ဒါတင်ခြင်း အောင်မြင်ပါသည်။
-
-ကျေးဇူးပြု၍ ${selectedPayment.name} ဖုန်းနံပါတ် ${storePhoneNumber} သို့ ကျသင့်ငွေ ${selectedPackage.price.toLocaleString()} Ks လွှဲပေးပါ။ ခေတ္တခဏအတွင်း ဖြည့်ပေးပါမည်။`);
-        }
-
-        // Initial Executions
-        renderAccountInputs();
-        renderPackages();
-        renderPayments();
-    </script>
+async function sendOrderToTelegram(){
+const btn=document.getElementById('confirmSendBtn'),box=document.getElementById('modalStatusMsg');
+btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+try{
+if(ORDER_API_URL==='/api/orders'){}
+const fd=new FormData();
+fd.append('orderId',state.orderId);fd.append('game',state.currentGame==='mlbb'?'Mobile Legends':'PUBG Mobile');
+fd.append('userId',state.userId);fd.append('zoneId',state.zoneId);fd.append('package',state.selectedPackage.name);
+fd.append('amount',String(state.selectedPackage.price));fd.append('paymentMethod',state.selectedPayment);fd.append('accountHolder','Daw July Aung');fd.append('targetPhone','09960669761');fd.append('createdAt',new Date().toISOString());fd.append('slip',state.slipFile);
+const response=await fetch(ORDER_API_URL,{method:'POST',body:fd});
+let result={};try{result=await response.json()}catch(_){}
+if(!response.ok||result.ok===false)throw new Error(result.message||result.error||'Order server is not configured yet.');
+box.className='text-xs text-center py-2 px-3 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+box.innerText=`Order ${state.orderId} submitted successfully!`;
+box.classList.remove('hidden');
+setTimeout(()=>{closeModal();resetForm()},2200);
+}catch(err){
+box.className='text-xs text-center py-2 px-3 rounded-lg bg-red-500/20 text-red-300 border border-red-500/40';
+box.innerText='Order submission failed: '+err.message;
+box.classList.remove('hidden');
+}finally{btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-check"></i> Submit Order'}
+}
+function resetForm(){
+state.selectedPackage=null;state.selectedPayment=null;state.slipFile=null;state.orderId=null;
+['mlbbUserId','mlbbZoneId','pubgUserId','slipInput'].forEach(id=>document.getElementById(id).value='');
+document.getElementById('uploadPrompt').classList.remove('hidden');document.getElementById('uploadPreview').classList.add('hidden');document.getElementById('paymentInstructionsBox').classList.add('hidden');
+document.querySelectorAll('.payment-card').forEach(c=>c.classList.remove('selected'));validatePlayerInput();renderPackages();updateSummary();
+}
+function showToast(message){const t=document.createElement('div');t.className='fixed bottom-5 right-5 z-[60] bg-cyan-500 text-gray-950 px-4 py-2.5 rounded-xl font-bold text-xs shadow-lg';t.innerHTML='<i class="fa-solid fa-circle-check"></i> '+message;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
+</script>
 </body>
 </html>
