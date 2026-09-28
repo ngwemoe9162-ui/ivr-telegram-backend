@@ -1,4 +1,5 @@
 console.log("SERVER JS FOUND");
+
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
@@ -15,6 +16,15 @@ app.use(express.json());
 const PORT = process.env.PORT || 10000;
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const GROUP_ID = process.env.TELEGRAM_GROUP_ID;
+
+// Escape HTML characters for Telegram HTML mode
+function escapeHtml(value) {
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
 
 // Health check
 app.get("/", (req, res) => {
@@ -35,7 +45,8 @@ app.post("/api/orders", (req, res) => {
     form.parse(req, async (err, fields, files) => {
 
         if (err) {
-            console.error(err);
+            console.error("Form Parse Error:", err);
+
             return res.status(400).json({
                 success: false,
                 message: "Could not read order data."
@@ -54,45 +65,47 @@ app.post("/api/orders", (req, res) => {
             const targetPhone = fields.targetPhone?.[0] || "";
 
             const orderId =
-                "IVR-" +
-                Date.now().toString().slice(-8);
+                "IVR-" + Date.now().toString().slice(-8);
 
             const dateTime = new Date().toLocaleString("en-US", {
                 timeZone: "Asia/Yangon"
             });
 
+            // Telegram order message
             let message = 
 🎮 <b>NEW IVR TOP-UP ORDER</b>
 ━━━━━━━━━━━━━━━━━━
 
-🆔 <b>Order ID:</b> <code>${orderId}</code>
+🆔 <b>Order ID:</b> <code>${escapeHtml(orderId)}</code>
 
-🎮 <b>Game:</b> ${game}
+🎮 <b>Game:</b> ${escapeHtml(game)}
 
-👤 <b>Player ID:</b> <code>${playerId}</code>
-${zoneId ? 🌐 <b>Zone ID:</b> <code>${zoneId}</code> : ""}
+👤 <b>Player ID:</b> <code>${escapeHtml(playerId)}</code>
+${zoneId ? 🌐 <b>Zone ID:</b> <code>${escapeHtml(zoneId)}</code> : ""}
 
-💎 <b>Package:</b> ${packageName}
+💎 <b>Package:</b> ${escapeHtml(packageName)}
 
-💰 <b>Amount:</b> ${price} Ks
+💰 <b>Amount:</b> ${escapeHtml(price)} Ks
 
-💳 <b>Payment:</b> ${payment}
+💳 <b>Payment:</b> ${escapeHtml(payment)}
 
-👤 <b>Account Holder:</b> ${accountHolder}
+👤 <b>Account Holder:</b> ${escapeHtml(accountHolder)}
 
-📱 <b>Payment Phone:</b> ${targetPhone}
+📱 <b>Payment Phone:</b> ${escapeHtml(targetPhone)}
 
-🕐 <b>Date:</b> ${dateTime}
+🕐 <b>Date:</b> ${escapeHtml(dateTime)}
 
 ━━━━━━━━━━━━━━━━━━
 📎 <i>Payment slip attached below.</i>
 ;
 
+            // Payment slip
             const slip =
                 files.slip ||
                 files.paymentSlip ||
                 files.receipt;
 
+            // Send photo + order information
             if (slip) {
 
                 const slipFile = Array.isArray(slip)
@@ -105,10 +118,23 @@ ${zoneId ? 🌐 <b>Zone ID:</b> <code>${zoneId}</code> : ""}
                 const formData = new FormData();
 
                 formData.append("chat_id", GROUP_ID);
+
+                // Read image and convert to Blob
+                const fileBuffer = fs.readFileSync(slipFile.filepath);
+
+                const fileBlob = new Blob(
+                    [fileBuffer],
+                    {
+                        type: slipFile.mimetype || "image/jpeg"
+                    }
+                );
+
                 formData.append(
                     "photo",
-                    fs.createReadStream(slipFile.filepath)
+                    fileBlob,
+                    slipFile.originalFilename || "payment-slip.jpg"
                 );
+
                 formData.append("caption", message);
                 formData.append("parse_mode", "HTML");
 
@@ -118,7 +144,6 @@ ${zoneId ? 🌐 <b>Zone ID:</b> <code>${zoneId}</code> : ""}
                 });
 
                 const result = await response.json();
-
                 if (!result.ok) {
                     throw new Error(
                         result.description || "Telegram error"
@@ -127,6 +152,7 @@ ${zoneId ? 🌐 <b>Zone ID:</b> <code>${zoneId}</code> : ""}
 
             } else {
 
+                // Send text only if no slip exists
                 const telegramUrl =
                     https://api.telegram.org/bot${BOT_TOKEN}/sendMessage;
 
@@ -136,40 +162,4 @@ ${zoneId ? 🌐 <b>Zone ID:</b> <code>${zoneId}</code> : ""}
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        chat_id: GROUP_ID,
-                        text: message,
-                        parse_mode: "HTML"
-                    })
-                });
-
-                const result = await response.json();
-
-                if (!result.ok) {
-                    throw new Error(
-                        result.description || "Telegram error"
-                    );
-                }
-            }
-          return res.json({
-                success: true,
-                orderId: orderId,
-                message: "Order sent successfully."
-            });
-
-        } catch (error) {
-
-            console.error("Order Error:", error);
-
-            return res.status(500).json({
-                success: false,
-                message: error.message
-            });
-        }
-    });
-});
-
-app.listen(PORT, () => {
-    console.log(
-        IVR Telegram Backend running on port ${PORT}
-    );
-});
+                        chat
