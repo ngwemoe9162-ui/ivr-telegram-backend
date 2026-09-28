@@ -17,7 +17,23 @@ const PORT = process.env.PORT || 10000;
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const GROUP_ID = process.env.TELEGRAM_GROUP_ID;
 
-// Escape HTML characters for Telegram HTML mode
+
+// ===============================
+// HEALTH CHECK
+// ===============================
+
+app.get("/", (req, res) => {
+    res.json({
+        status: "online",
+        service: "IVR Telegram Backend"
+    });
+});
+
+
+// ===============================
+// HTML ESCAPE
+// ===============================
+
 function escapeHtml(value) {
     return String(value || "")
         .replace(/&/g, "&amp;")
@@ -26,15 +42,24 @@ function escapeHtml(value) {
         .replace(/"/g, "&quot;");
 }
 
-// Health check
-app.get("/", (req, res) => {
-    res.json({
-        status: "online",
-        service: "IVR Telegram Backend"
-    });
-});
 
-// Receive order from website
+// ===============================
+// GET FORM FIELD
+// ===============================
+
+function getField(value) {
+    if (Array.isArray(value)) {
+        return value[0] || "";
+    }
+
+    return value || "";
+}
+
+
+// ===============================
+// RECEIVE ORDER
+// ===============================
+
 app.post("/api/orders", (req, res) => {
 
     const form = formidable({
@@ -45,6 +70,7 @@ app.post("/api/orders", (req, res) => {
     form.parse(req, async (err, fields, files) => {
 
         if (err) {
+
             console.error("Form Parse Error:", err);
 
             return res.status(400).json({
@@ -53,113 +79,90 @@ app.post("/api/orders", (req, res) => {
             });
         }
 
+
         try {
 
-            const game = fields.game?.[0] || "";
-            const playerId = fields.playerId?.[0] || "";
-            const zoneId = fields.zoneId?.[0] || "";
-            const packageName = fields.package?.[0] || "";
-            const price = fields.price?.[0] || "";
-            const payment = fields.payment?.[0] || "";
-            const accountHolder = fields.accountHolder?.[0] || "";
-            const targetPhone = fields.targetPhone?.[0] || "";
+            // ===============================
+            // ORDER DATA
+            // ===============================
+
+            const game = getField(fields.game);
+
+            const playerId = getField(fields.playerId);
+
+            const zoneId = getField(fields.zoneId);
+
+            const packageName = getField(fields.package);
+
+            const price = getField(fields.price);
+
+            const payment = getField(fields.payment);
+
+            const accountHolder = getField(fields.accountHolder);
+
+            const targetPhone = getField(fields.targetPhone);
+
+
+            // ===============================
+            // ORDER ID
+            // ===============================
 
             const orderId =
                 "IVR-" + Date.now().toString().slice(-8);
+
+
+            // ===============================
+            // DATE & TIME
+            // ===============================
 
             const dateTime = new Date().toLocaleString("en-US", {
                 timeZone: "Asia/Yangon"
             });
 
-            // Telegram order message
-            let message = 
-🎮 <b>NEW IVR TOP-UP ORDER</b>
-━━━━━━━━━━━━━━━━━━
 
-🆔 <b>Order ID:</b> <code>${escapeHtml(orderId)}</code>
+            // ===============================
+            // TELEGRAM MESSAGE
+            // ===============================
 
-🎮 <b>Game:</b> ${escapeHtml(game)}
+            let message = "";
 
-👤 <b>Player ID:</b> <code>${escapeHtml(playerId)}</code>
-${zoneId ? 🌐 <b>Zone ID:</b> <code>${escapeHtml(zoneId)}</code> : ""}
+            message += "🎮 <b>NEW IVR TOP-UP ORDER</b>\n";
+            message += "━━━━━━━━━━━━━━━━━━\n\n";
 
-💎 <b>Package:</b> ${escapeHtml(packageName)}
+            message += "🆔 <b>Order ID:</b> <code>";
+            message += escapeHtml(orderId);
+            message += "</code>\n\n";
 
-💰 <b>Amount:</b> ${escapeHtml(price)} Ks
+            message += "🎮 <b>Game:</b> ";
+            message += escapeHtml(game);
+            message += "\n\n";
 
-💳 <b>Payment:</b> ${escapeHtml(payment)}
+            message += "👤 <b>Player ID:</b> <code>";
+            message += escapeHtml(playerId);
+            message += "</code>\n";
 
-👤 <b>Account Holder:</b> ${escapeHtml(accountHolder)}
+            if (zoneId) {
+                message += "🌐 <b>Zone ID:</b> <code>";
+                message += escapeHtml(zoneId);
+                message += "</code>\n";
+            }
 
-📱 <b>Payment Phone:</b> ${escapeHtml(targetPhone)}
+            message += "\n";
 
-🕐 <b>Date:</b> ${escapeHtml(dateTime)}
+            message += "💎 <b>Package:</b> ";
+            message += escapeHtml(packageName);
+            message += "\n\n";
 
-━━━━━━━━━━━━━━━━━━
-📎 <i>Payment slip attached below.</i>
-;
+            message += "💰 <b>Amount:</b> ";
+            message += escapeHtml(price);
+            message += " Ks\n\n";
 
-            // Payment slip
-            const slip =
-                files.slip ||
-                files.paymentSlip ||
-                files.receipt;
+            message += "💳 <b>Payment:</b> ";
+            message += escapeHtml(payment);
+            message += "\n\n";
 
-            // Send photo + order information
-            if (slip) {
+            message += "👤 <b>Account Holder:</b> ";
+            message += escapeHtml(accountHolder);
+            message += "\n\n";
 
-                const slipFile = Array.isArray(slip)
-                    ? slip[0]
-                    : slip;
-
-                const telegramUrl =
-                    https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto;
-
-                const formData = new FormData();
-
-                formData.append("chat_id", GROUP_ID);
-
-                // Read image and convert to Blob
-                const fileBuffer = fs.readFileSync(slipFile.filepath);
-
-                const fileBlob = new Blob(
-                    [fileBuffer],
-                    {
-                        type: slipFile.mimetype || "image/jpeg"
-                    }
-                );
-
-                formData.append(
-                    "photo",
-                    fileBlob,
-                    slipFile.originalFilename || "payment-slip.jpg"
-                );
-
-                formData.append("caption", message);
-                formData.append("parse_mode", "HTML");
-
-                const response = await fetch(telegramUrl, {
-                    method: "POST",
-                    body: formData
-                });
-
-                const result = await response.json();
-                if (!result.ok) {
-                    throw new Error(
-                        result.description || "Telegram error"
-                    );
-                }
-
-            } else {
-
-                // Send text only if no slip exists
-                const telegramUrl =
-                    https://api.telegram.org/bot${BOT_TOKEN}/sendMessage;
-
-                const response = await fetch(telegramUrl, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        chat
+            message += "📱 <b>
