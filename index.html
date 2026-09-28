@@ -290,7 +290,10 @@ fd.append('zoneId',state.zoneId);
 fd.append('package',state.selectedPackage.name);
 fd.append('price',String(state.selectedPackage.price));
 fd.append('payment',state.selectedPayment);fd.append('accountHolder','Daw July Aung');fd.append('targetPhone','09960669761');fd.append('createdAt',new Date().toISOString());fd.append('slip',state.slipFile);
-const response=await fetch(ORDER_API_URL,{method:'POST',body:fd});
+const response = await fetch(ORDER_API_URL, {
+  method: "POST",
+  body: fd
+});
 let result={};try{result=await response.json()}catch(_){}
 if(!response.ok||result.ok===false)throw new Error(result.message||result.error||'Order server is not configured yet.');
 box.className='text-xs text-center py-2 px-3 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
