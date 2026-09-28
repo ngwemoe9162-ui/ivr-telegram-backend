@@ -178,7 +178,7 @@ body{font-family:Inter,sans-serif;background:#030712;color:#f3f4f6;overflow-x:hi
  The backend should receive JSON + slip image and send it to your Telegram group.
 */
 
-const ORDER_API_URL = "https://ivr-telegram-backend.onrender.com/api/orders.com";
+const ORDER_API_URL = "https://ivr-telegram-backend.onrender.com/api/orders";
 
 const gamePackages={
 mlbb:[
@@ -285,8 +285,11 @@ btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Sub
 try{
 const fd=new FormData();
 fd.append('orderId',state.orderId);fd.append('game',state.currentGame==='mlbb'?'Mobile Legends':'PUBG Mobile');
-fd.append('userId',state.userId);fd.append('zoneId',state.zoneId);fd.append('package',state.selectedPackage.name);
-fd.append('amount',String(state.selectedPackage.price));fd.append('paymentMethod',state.selectedPayment);fd.append('accountHolder','Daw July Aung');fd.append('targetPhone','09960669761');fd.append('createdAt',new Date().toISOString());fd.append('slip',state.slipFile);
+fd.append('playerId',state.userId);
+fd.append('zoneId',state.zoneId);
+fd.append('package',state.selectedPackage.name);
+fd.append('price',String(state.selectedPackage.price));
+fd.append('payment',state.selectedPayment);fd.append('accountHolder','Daw July Aung');fd.append('targetPhone','09960669761');fd.append('createdAt',new Date().toISOString());fd.append('slip',state.slipFile);
 const response=await fetch(ORDER_API_URL,{method:'POST',body:fd});
 let result={};try{result=await response.json()}catch(_){}
 if(!response.ok||result.ok===false)throw new Error(result.message||result.error||'Order server is not configured yet.');
