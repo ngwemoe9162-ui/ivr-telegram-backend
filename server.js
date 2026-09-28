@@ -16,10 +16,6 @@ const PORT = process.env.PORT || 10000;
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const GROUP_ID = process.env.TELEGRAM_GROUP_ID;
 
-// ===============================
-// HTML ESCAPE
-// ===============================
-
 function escapeHtml(value) {
     return String(value || "")
         .replace(/&/g, "&amp;")
@@ -28,20 +24,12 @@ function escapeHtml(value) {
         .replace(/"/g, "&quot;");
 }
 
-// ===============================
-// HEALTH CHECK
-// ===============================
-
 app.get("/", (req, res) => {
     res.json({
         status: "online",
         service: "IVR Telegram Backend"
     });
 });
-
-// ===============================
-// RECEIVE ORDER
-// ===============================
 
 app.post("/api/orders", (req, res) => {
 
@@ -53,7 +41,7 @@ app.post("/api/orders", (req, res) => {
     form.parse(req, async (err, fields, files) => {
 
         if (err) {
-            console.error("Form error:", err);
+            console.error(err);
 
             return res.status(400).json({
                 success: false,
@@ -78,10 +66,6 @@ app.post("/api/orders", (req, res) => {
             const dateTime = new Date().toLocaleString("en-US", {
                 timeZone: "Asia/Yangon"
             });
-
-            // ===============================
-            // TELEGRAM MESSAGE
-            // ===============================
 
             let message = "";
 
@@ -135,17 +119,10 @@ app.post("/api/orders", (req, res) => {
             message += "━━━━━━━━━━━━━━━━━━\n";
             message += "📎 <i>Payment slip attached below.</i>";
 
-            // ===============================
-            // PAYMENT SLIP
-            // ===============================
-
             const slip =
                 files.slip ||
                 files.paymentSlip ||
                 files.receipt;
-            // ===============================
-            // SEND PHOTO TO TELEGRAM GROUP
-            // ===============================
 
             if (slip) {
 
@@ -153,8 +130,10 @@ app.post("/api/orders", (req, res) => {
                     ? slip[0]
                     : slip;
 
-               const telegramUrl =
-    https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto;
+                const telegramUrl =
+                    "https://api.telegram.org/bot" +
+                    BOT_TOKEN +
+                    "/sendPhoto";
 
                 const formData = new FormData();
 
@@ -167,7 +146,6 @@ app.post("/api/orders", (req, res) => {
 
                 formData.append("caption", message);
                 formData.append("parse_mode", "HTML");
-
                 const response = await fetch(telegramUrl, {
                     method: "POST",
                     body: formData,
@@ -184,12 +162,11 @@ app.post("/api/orders", (req, res) => {
 
             } else {
 
-                // ===============================
-                // SEND TEXT IF NO SLIP
-                // ===============================
-
                 const telegramUrl =
-    https://api.telegram.org/bot${BOT_TOKEN}/sendMessage;
+                    "https://api.telegram.org/bot" +
+                    BOT_TOKEN +
+                    "/sendMessage";
+
                 const response = await fetch(telegramUrl, {
                     method: "POST",
                     headers: {
@@ -211,10 +188,6 @@ app.post("/api/orders", (req, res) => {
                 }
             }
 
-            // ===============================
-            // SUCCESS RESPONSE
-            // ===============================
-
             return res.json({
                 success: true,
                 orderId: orderId,
@@ -233,14 +206,8 @@ app.post("/api/orders", (req, res) => {
     });
 });
 
-// ===============================
-// START SERVER
-// ===============================
-
 app.listen(PORT, () => {
-
     console.log(
-        IVR Telegram Backend running on port ${PORT}
+        "IVR Telegram Backend running on port " + PORT
     );
-
 });
