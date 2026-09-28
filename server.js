@@ -3,7 +3,7 @@ require("node-fetch");
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const formidable = require("formidable");
+const { formidable } = require("formidable");
 const fs = require("fs");
 const FormData = require("form-data");
 
