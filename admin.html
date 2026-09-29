@@ -46,18 +46,32 @@ body {
     border: 1px solid rgba(255,255,255,.08);
 }
 
-input, select {
+input,
+select {
     outline: none;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
     border-color: #06b6d4 !important;
     box-shadow: 0 0 0 2px rgba(6,182,212,.12);
+}
+
+button {
+    transition: .2s ease;
+}
+
+button:active {
+    transform: scale(.97);
 }
 </style>
 </head>
 
 <body>
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
 
 <header class="sticky top-0 z-40 glass border-b border-gray-800">
 
@@ -91,42 +105,71 @@ Database Online
 </header>
 
 
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
 <main class="max-w-7xl mx-auto px-4 py-6">
 
-<!-- DASHBOARD -->
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
 
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
 
 <div class="glass rounded-2xl p-4">
 <p class="text-xs text-gray-500">Total Packages</p>
-<p id="totalPackages" class="text-2xl font-black text-cyan-400 mt-1">0</p>
+
+<p id="totalPackages"
+class="text-2xl font-black text-cyan-400 mt-1">
+0
+</p>
 </div>
+
 
 <div class="glass rounded-2xl p-4">
 <p class="text-xs text-gray-500">MLBB</p>
-<p id="mlbbCount" class="text-2xl font-black text-blue-400 mt-1">0</p>
+
+<p id="mlbbCount"
+class="text-2xl font-black text-blue-400 mt-1">
+0
+</p>
 </div>
+
 
 <div class="glass rounded-2xl p-4">
 <p class="text-xs text-gray-500">PUBG</p>
-<p id="pubgCount" class="text-2xl font-black text-amber-400 mt-1">0</p>
+
+<p id="pubgCount"
+class="text-2xl font-black text-amber-400 mt-1">
+0
+</p>
 </div>
+
 
 <div class="glass rounded-2xl p-4">
 <p class="text-xs text-gray-500">Active</p>
-<p id="activeCount" class="text-2xl font-black text-emerald-400 mt-1">0</p>
+
+<p id="activeCount"
+class="text-2xl font-black text-emerald-400 mt-1">
+0
+</p>
 </div>
 
 </div>
 
 
-<!-- ADD PACKAGE -->
+<!-- =====================================================
+     ADD PACKAGE
+===================================================== -->
 
 <section class="glass rounded-2xl p-5 mb-6">
 
 <div class="flex items-center justify-between mb-5">
 
 <div>
+
 <h2 class="font-black text-lg">
 <i class="fa-solid fa-plus text-cyan-400 mr-2"></i>
 Add New Package
@@ -135,6 +178,7 @@ Add New Package
 <p class="text-xs text-gray-500 mt-1">
 Add Diamonds or UC without editing your website code.
 </p>
+
 </div>
 
 </div>
@@ -142,68 +186,112 @@ Add Diamonds or UC without editing your website code.
 
 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-<div>
-<label class="text-xs text-gray-400">Game</label>
 
-<select id="game"
+<!-- GAME -->
+
+<div>
+
+<label class="text-xs text-gray-400">
+Game
+</label>
+
+<select
+id="game"
 class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
 
-<option value="mlbb">Mobile Legends</option>
-<option value="pubg">PUBG Mobile</option>
+<option value="mlbb">
+Mobile Legends
+</option>
+
+<option value="pubg">
+PUBG Mobile
+</option>
 
 </select>
+
 </div>
 
 
+<!-- NAME -->
+
 <div>
-<label class="text-xs text-gray-400">Package Name</label>
+
+<label class="text-xs text-gray-400">
+Package Name
+</label>
 
 <input
 id="packageName"
 type="text"
 placeholder="e.g. 429 Diamonds"
 class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+
 </div>
 
 
+<!-- BONUS -->
+
 <div>
-<label class="text-xs text-gray-400">Bonus</label>
+
+<label class="text-xs text-gray-400">
+Bonus
+</label>
 
 <input
 id="bonus"
 type="text"
 placeholder="+43 Bonus"
 class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+
 </div>
 
 
+<!-- PRICE -->
+
 <div>
-<label class="text-xs text-gray-400">Price (Ks)</label>
+
+<label class="text-xs text-gray-400">
+Price (Ks)
+</label>
 
 <input
 id="price"
 type="number"
+min="1"
+step="1"
 placeholder="23000"
 class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+
 </div>
 
 
+<!-- ICON -->
+
 <div>
-<label class="text-xs text-gray-400">Icon</label>
+
+<label class="text-xs text-gray-400">
+Icon
+</label>
 
 <input
 id="icon"
 type="text"
 value="fa-solid fa-gem"
 class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+
 </div>
 
 
+<!-- HOT -->
+
 <div class="flex items-end">
 
-<label class="flex items-center gap-3 bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full cursor-pointer">
+<label
+class="flex items-center gap-3 bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full cursor-pointer">
 
-<input id="highlight" type="checkbox">
+<input
+id="highlight"
+type="checkbox">
 
 <span class="text-sm">
 HOT Package
@@ -214,9 +302,12 @@ HOT Package
 </div>
 
 
+<!-- ADD BUTTON -->
+
 <div class="flex items-end">
 
 <button
+id="addPackageBtn"
 onclick="addPackage()"
 class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-gray-950 font-black">
 
@@ -232,42 +323,66 @@ Add Package
 </section>
 
 
-<!-- PACKAGE LIST -->
+<!-- =====================================================
+     PACKAGE LIST
+===================================================== -->
 
 <section class="glass rounded-2xl p-5">
 
 <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
 
+
 <div>
+
 <h2 class="font-black text-lg">
+
 <i class="fa-solid fa-box-open text-cyan-400 mr-2"></i>
+
 Packages
+
 </h2>
 
-<p class="text-xs text-gray-500">
+<p class="text-xs text-gray-500 mt-1">
 Manage prices, status and packages.
 </p>
+
 </div>
+
 
 <select
 id="filterGame"
 onchange="loadPackages()"
 class="bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-xs">
 
-<option value="all">All Games</option>
-<option value="mlbb">Mobile Legends</option>
-<option value="pubg">PUBG Mobile</option>
+<option value="all">
+All Games
+</option>
+
+<option value="mlbb">
+Mobile Legends
+</option>
+
+<option value="pubg">
+PUBG Mobile
+</option>
 
 </select>
 
 </div>
 
 
-<div id="packageList" class="space-y-3">
+<div
+id="packageList"
+class="space-y-3">
 
 <div class="text-center py-10 text-gray-500">
+
 <i class="fa-solid fa-spinner fa-spin text-xl"></i>
-<p class="text-xs mt-2">Loading packages...</p>
+
+<p class="text-xs mt-2">
+Loading packages...
+</p>
+
 </div>
 
 </div>
@@ -277,13 +392,17 @@ class="bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-xs">
 </main>
 
 
-<!-- EDIT MODAL -->
+<!-- =====================================================
+     EDIT MODAL
+===================================================== -->
 
 <div
 id="editModal"
 class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md items-center justify-center p-4">
 
+
 <div class="glass rounded-2xl p-5 w-full max-w-md">
+
 
 <div class="flex justify-between items-center mb-5">
 
@@ -291,7 +410,9 @@ class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md items-center justi
 Edit Package
 </h3>
 
-<button onclick="closeEdit()"
+
+<button
+onclick="closeEdit()"
 class="text-gray-400 hover:text-white">
 
 <i class="fa-solid fa-xmark"></i>
@@ -301,65 +422,118 @@ class="text-gray-400 hover:text-white">
 </div>
 
 
-<input id="editId" type="hidden">
+<input
+id="editId"
+type="hidden">
 
 
 <div class="space-y-4">
 
-<div>
-<label class="text-xs text-gray-400">Package Name</label>
 
-<input id="editName"
+<!-- NAME -->
+
+<div>
+
+<label class="text-xs text-gray-400">
+Package Name
+</label>
+
+<input
+id="editName"
+type="text"
 class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+
 </div>
 
 
-<div>
-<label class="text-xs text-gray-400">Bonus</label>
+<!-- BONUS -->
 
-<input id="editBonus"
+<div>
+
+<label class="text-xs text-gray-400">
+Bonus
+</label>
+
+<input
+id="editBonus"
+type="text"
 class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+
 </div>
 
 
-<div>
-<label class="text-xs text-gray-400">Price</label>
+<!-- PRICE -->
 
-<input id="editPrice"
+<div>
+
+<label class="text-xs text-gray-400">
+Price (Ks)
+</label>
+
+<input
+id="editPrice"
 type="number"
+min="1"
+step="1"
 class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+
 </div>
 
+
+<!-- ICON -->
 
 <div>
-<label class="text-xs text-gray-400">Icon</label>
 
-<input id="editIcon"
+<label class="text-xs text-gray-400">
+Icon
+</label>
+
+<input
+id="editIcon"
+type="text"
 class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+
 </div>
 
 
+<!-- HOT -->
+
 <label class="flex items-center gap-3">
 
-<input id="editHighlight" type="checkbox">
+<input
+id="editHighlight"
+type="checkbox">
 
-<span class="text-sm">HOT Package</span>
+<span class="text-sm">
+HOT Package
+</span>
 
 </label>
 
 
+<!-- ACTIVE -->
+
 <label class="flex items-center gap-3">
 
-<input id="editActive" type="checkbox">
+<input
+id="editActive"
+type="checkbox">
 
-<span class="text-sm">Active</span>
+<span class="text-sm">
+Active
+</span>
 
 </label>
 
+
+<!-- SAVE -->
 
 <button
+id="saveEditBtn"
 onclick="saveEdit()"
 class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-gray-950 font-black">
+
+<i class="fa-solid fa-floppy-disk mr-1"></i>
 
 Save Changes
 
@@ -376,7 +550,7 @@ Save Changes
 
 /* =====================================================
    SUPABASE CONFIG
-   ===================================================== */
+===================================================== */
 
 const SUPABASE_URL =
 "https://pjiiipywtywkztgjpmro.supabase.co";
@@ -386,22 +560,53 @@ const SUPABASE_PUBLISHABLE_KEY =
 
 
 const supabaseClient =
-supabase.createClient(
+window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
 );
 
 
 /* =====================================================
-   LOAD
-   ===================================================== */
+   PAGE LOAD
+===================================================== */
 
-window.addEventListener("load", loadPackages);
+window.addEventListener(
+    "load",
+    loadPackages
+);
+
+
+/* =====================================================
+   BOOLEAN NORMALIZER
+===================================================== */
+
+function toBoolean(value) {
+
+    if (typeof value === "boolean") {
+        return value;
+    }
+
+    if (typeof value === "number") {
+        return value === 1;
+    }
+
+    const text =
+        String(value ?? "")
+        .trim()
+        .toLowerCase();
+
+    return (
+        text === "true" ||
+        text === "1" ||
+        text === "yes" ||
+        text === "on"
+    );
+}
 
 
 /* =====================================================
    LOAD PACKAGES
-   ===================================================== */
+===================================================== */
 
 async function loadPackages() {
 
@@ -415,391 +620,1049 @@ async function loadPackages() {
     list.innerHTML = `
         <div class="text-center py-10 text-gray-500">
             <i class="fa-solid fa-spinner fa-spin text-xl"></i>
-            <p class="text-xs mt-2">Loading packages...</p>
+            <p class="text-xs mt-2">
+                Loading packages...
+            </p>
         </div>
     `;
 
 
-    let query =
-        supabaseClient
-        .from("packages")
-        .select("*")
-        .order("id", {ascending:true});
+    try {
+
+        let query =
+            supabaseClient
+            .from("packages")
+            .select(`
+                id,
+                game,
+                name,
+                bonus,
+                price,
+                icon,
+                highlight,
+                active
+            `)
+            .order("id", {
+                ascending: true
+            });
 
 
-    if(filter !== "all") {
-        query = query.eq("game", filter);
-    }
+        if (filter !== "all") {
+
+            query =
+                query.eq(
+                    "game",
+                    filter
+                );
+
+        }
 
 
-    const { data, error } = await query;
+        const {
+            data,
+            error
+        } = await query;
 
 
-    if(error) {
+        if (error) {
 
-        console.error(error);
+            throw error;
 
-        list.innerHTML = `
-            <div class="text-center py-8 text-red-400 text-sm">
-                Failed to load packages.
-                <br>
-                <span class="text-xs text-gray-500">
-                ${escapeHtml(error.message)}
-                </span>
-            </div>
-        `;
-
-        return;
-    }
+        }
 
 
-    updateStats(data || []);
+        const packages =
+            (data || []).map(pkg => {
+
+                return {
+
+                    id: pkg.id,
+
+                    game:
+                        String(
+                            pkg.game ?? ""
+                        )
+                        .trim()
+                        .toLowerCase(),
+
+                    name:
+                        String(
+                            pkg.name ?? ""
+                        ),
+
+                    bonus:
+                        String(
+                            pkg.bonus ?? ""
+                        ),
+
+                    price:
+                        Number(pkg.price) || 0,
+
+                    icon:
+                        String(
+                            pkg.icon ?? ""
+                        ).trim()
+                        ||
+                        "fa-solid fa-gem",
+
+                    highlight:
+                        toBoolean(
+                            pkg.highlight
+                        ),
+
+                    active:
+                        toBoolean(
+                            pkg.active
+                        )
+
+                };
+
+            });
 
 
-    if(!data.length) {
-
-        list.innerHTML = `
-            <div class="text-center py-10 text-gray-500">
-                No packages found.
-            </div>
-        `;
-
-        return;
-    }
+        updateStats(packages);
 
 
-    list.innerHTML = "";
+        if (!packages.length) {
+
+            list.innerHTML = `
+                <div class="text-center py-10 text-gray-500">
+
+                    <i class="fa-solid fa-box-open text-2xl mb-2"></i>
+
+                    <p class="text-sm">
+                        No packages found.
+                    </p>
+
+                </div>
+            `;
+
+            return;
+
+        }
 
 
-    data.forEach(pkg => {
-
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "bg-gray-950/70 border border-gray-800 rounded-xl p-4 flex flex-col md:flex-row md:items-center gap-4";
+        list.innerHTML = "";
 
 
-        card.innerHTML = `
+        packages.forEach(pkg => {
 
-            <div class="w-11 h-11 shrink-0 rounded-xl
-                bg-cyan-500/10 text-cyan-400
-                flex items-center justify-center">
-
-                <i class="${escapeHtml(pkg.icon || 'fa-solid fa-gem')}"></i>
-
-            </div>
+            const card =
+                document.createElement("div");
 
 
-            <div class="flex-1">
+            card.className =
+                "bg-gray-950/70 border border-gray-800 rounded-xl p-4 flex flex-col md:flex-row md:items-center gap-4";
 
-                <div class="flex items-center gap-2 flex-wrap">
 
-                    <span class="font-bold text-white">
-                        ${escapeHtml(pkg.name)}
-                    </span>
+            const gameName =
+                pkg.game === "mlbb"
+                ? "Mobile Legends"
+                : "PUBG Mobile";
 
-                    ${pkg.highlight ? `
-                        <span class="text-[9px] bg-amber-500 text-black px-2 py-0.5 rounded font-black">
-                            HOT
-                        </span>
-                    ` : ""}
 
-                    ${pkg.active ? `
-                        <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded">
-                            ACTIVE
-                        </span>
-                    ` : `
-                        <span class="text-[9px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded">
-                            OFF
-                        </span>
-                    `}
+            const safePackage =
+                JSON.stringify(pkg)
+                .replace(/'/g, "&#39;");
+
+
+            card.innerHTML = `
+
+                <!-- ICON -->
+
+                <div class="w-11 h-11 shrink-0 rounded-xl
+                    bg-cyan-500/10
+                    text-cyan-400
+                    flex items-center justify-center">
+
+                    <i class="${escapeHtml(pkg.icon)}"></i>
 
                 </div>
 
 
-                <div class="text-xs text-gray-500 mt-1">
+                <!-- INFO -->
 
-                    ${pkg.game === "mlbb"
-                        ? "Mobile Legends"
-                        : "PUBG Mobile"}
+                <div class="flex-1">
 
-                    • ${escapeHtml(pkg.bonus || "")}
+                    <div class="flex items-center gap-2 flex-wrap">
+
+                        <span class="font-bold text-white">
+                            ${escapeHtml(pkg.name)}
+                        </span>
+
+
+                        ${
+                            pkg.highlight
+                            ?
+                            `
+                            <span
+                            class="text-[9px] bg-amber-500 text-black px-2 py-0.5 rounded font-black">
+
+                                HOT
+
+                            </span>
+                            `
+                            :
+                            ""
+                        }
+
+
+                        ${
+                            pkg.active
+                            ?
+                            `
+                            <span
+                            class="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded">
+
+                                ACTIVE
+
+                            </span>
+                            `
+                            :
+                            `
+                            <span
+                            class="text-[9px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded">
+
+                                OFF
+
+                            </span>
+                            `
+                        }
+
+                    </div>
+
+
+                    <div
+                    class="text-xs text-gray-500 mt-1">
+
+                        ${gameName}
+
+                        •
+
+                        ${escapeHtml(pkg.bonus)}
+
+                    </div>
 
                 </div>
 
-            </div>
+
+                <!-- PRICE -->
+
+                <div
+                class="text-emerald-400 font-black whitespace-nowrap">
+
+                    ${Number(pkg.price).toLocaleString()} Ks
+
+                </div>
 
 
-            <div class="text-emerald-400 font-black">
+                <!-- BUTTONS -->
 
-                ${Number(pkg.price).toLocaleString()} Ks
-
-            </div>
+                <div class="flex gap-2">
 
 
-            <div class="flex gap-2">
+                    <!-- EDIT -->
 
-                <button
-                    onclick='openEdit(${JSON.stringify(pkg)})'
-                    class="px-3 py-2 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                    <button
+                    onclick='openEdit(${safePackage})'
+                    class="px-3 py-2 rounded-lg
+                    bg-cyan-500/10
+                    text-cyan-400
+                    border border-cyan-500/20">
 
-                    <i class="fa-solid fa-pen"></i>
+                        <i class="fa-solid fa-pen"></i>
 
-                </button>
+                    </button>
 
 
-                <button
-                    onclick="toggleActive(${pkg.id}, ${pkg.active})"
+                    <!-- ACTIVE -->
+
+                    <button
+                    onclick="toggleActive(${Number(pkg.id)}, ${pkg.active})"
                     class="px-3 py-2 rounded-lg bg-gray-800 text-gray-300">
 
-                    <i class="fa-solid ${pkg.active ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                        <i class="fa-solid ${
+                            pkg.active
+                            ? "fa-eye-slash"
+                            : "fa-eye"
+                        }"></i>
 
-                </button>
+                    </button>
+
+                </div>
+
+            `;
+
+
+            list.appendChild(card);
+
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "LOAD PACKAGES ERROR:",
+            error
+        );
+
+
+        list.innerHTML = `
+
+            <div
+            class="text-center py-8 text-red-400 text-sm">
+
+                <i
+                class="fa-solid fa-triangle-exclamation text-xl mb-2">
+                </i>
+
+                <p>
+                    Failed to load packages.
+                </p>
+
+                <p
+                class="text-xs text-gray-500 mt-2 break-all">
+
+                    ${escapeHtml(
+                        error.message ||
+                        String(error)
+                    )}
+
+                </p>
 
             </div>
 
         `;
 
-
-        list.appendChild(card);
-
-    });
+    }
 
 }
 
 
 /* =====================================================
    STATS
-   ===================================================== */
+===================================================== */
 
 function updateStats(data) {
 
-    document.getElementById("totalPackages").innerText =
+    document.getElementById(
+        "totalPackages"
+    ).innerText =
         data.length;
 
-    document.getElementById("mlbbCount").innerText =
-        data.filter(x => x.game === "mlbb").length;
 
-    document.getElementById("pubgCount").innerText =
-        data.filter(x => x.game === "pubg").length;
+    document.getElementById(
+        "mlbbCount"
+    ).innerText =
+        data.filter(
+            x => x.game === "mlbb"
+        ).length;
 
-    document.getElementById("activeCount").innerText =
-        data.filter(x => x.active).length;
+
+    document.getElementById(
+        "pubgCount"
+    ).innerText =
+        data.filter(
+            x => x.game === "pubg"
+        ).length;
+
+
+    document.getElementById(
+        "activeCount"
+    ).innerText =
+        data.filter(
+            x => x.active === true
+        ).length;
+
 }
 
 
 /* =====================================================
    ADD PACKAGE
-   ===================================================== */
+===================================================== */
 
 async function addPackage() {
 
     const game =
-        document.getElementById("game").value;
+        document.getElementById(
+            "game"
+        ).value;
+
 
     const name =
-        document.getElementById("packageName").value.trim();
+        document.getElementById(
+            "packageName"
+        ).value.trim();
+
 
     const bonus =
-        document.getElementById("bonus").value.trim();
+        document.getElementById(
+            "bonus"
+        ).value.trim();
+
 
     const price =
-        Number(document.getElementById("price").value);
+        Number(
+            document.getElementById(
+                "price"
+            ).value
+        );
+
 
     const icon =
-        document.getElementById("icon").value.trim();
+        document.getElementById(
+            "icon"
+        ).value.trim();
+
 
     const highlight =
-        document.getElementById("highlight").checked;
+        document.getElementById(
+            "highlight"
+        ).checked;
 
 
-    if(!name || !price) {
+    if (!name) {
 
-        alert("Package name and price are required.");
+        alert(
+            "Package name is required."
+        );
 
         return;
+
     }
 
 
-    const { error } =
-        await supabaseClient
-        .from("packages")
-        .insert([{
-            game: game,
-            name: name,
-            bonus: bonus,
-            price: price,
-            icon: icon || "fa-solid fa-gem",
-            highlight: highlight,
-            active: true
-        }]);
+    if (
+        !Number.isFinite(price) ||
+        price <= 0
+    ) {
 
-
-    if(error) {
-
-        alert("Failed to add package:\n" + error.message);
+        alert(
+            "Please enter a valid price."
+        );
 
         return;
+
     }
 
 
-    document.getElementById("packageName").value = "";
-    document.getElementById("bonus").value = "";
-    document.getElementById("price").value = "";
-    document.getElementById("highlight").checked = false;
+    const button =
+        document.getElementById(
+            "addPackageBtn"
+        );
 
 
-    await loadPackages();
+    button.disabled = true;
 
-    alert("Package added successfully.");
+    button.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin mr-1"></i>
+        Adding...
+    `;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+            .from("packages")
+            .insert([{
+
+                game: game,
+
+                name: name,
+
+                bonus: bonus,
+
+                price: price,
+
+                icon:
+                    icon ||
+                    "fa-solid fa-gem",
+
+                highlight:
+                    highlight,
+
+                active:
+                    true
+
+            }])
+            .select();
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        console.log(
+            "PACKAGE ADDED:",
+            data
+        );
+
+
+        document.getElementById(
+            "packageName"
+        ).value = "";
+
+
+        document.getElementById(
+            "bonus"
+        ).value = "";
+
+
+        document.getElementById(
+            "price"
+        ).value = "";
+
+
+        document.getElementById(
+            "highlight"
+        ).checked = false;
+
+
+        await loadPackages();
+
+
+        alert(
+            "Package added successfully."
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "ADD PACKAGE ERROR:",
+            error
+        );
+
+
+        alert(
+            "Failed to add package:\n\n" +
+            (
+                error.message ||
+                String(error)
+            )
+        );
+
+
+    } finally {
+
+        button.disabled = false;
+
+        button.innerHTML = `
+            <i class="fa-solid fa-plus mr-1"></i>
+            Add Package
+        `;
+
+    }
+
 }
 
 
 /* =====================================================
-   EDIT
-   ===================================================== */
+   OPEN EDIT
+===================================================== */
 
 function openEdit(pkg) {
 
-    document.getElementById("editId").value =
+    document.getElementById(
+        "editId"
+    ).value =
         pkg.id;
 
-    document.getElementById("editName").value =
+
+    document.getElementById(
+        "editName"
+    ).value =
         pkg.name || "";
 
-    document.getElementById("editBonus").value =
+
+    document.getElementById(
+        "editBonus"
+    ).value =
         pkg.bonus || "";
 
-    document.getElementById("editPrice").value =
+
+    document.getElementById(
+        "editPrice"
+    ).value =
         pkg.price || "";
 
-    document.getElementById("editIcon").value =
-        pkg.icon || "fa-solid fa-gem";
 
-    document.getElementById("editHighlight").checked =
-        !!pkg.highlight;
+    document.getElementById(
+        "editIcon"
+    ).value =
+        pkg.icon ||
+        "fa-solid fa-gem";
 
-    document.getElementById("editActive").checked =
-        !!pkg.active;
+
+    document.getElementById(
+        "editHighlight"
+    ).checked =
+        toBoolean(
+            pkg.highlight
+        );
+
+
+    document.getElementById(
+        "editActive"
+    ).checked =
+        toBoolean(
+            pkg.active
+        );
 
 
     const modal =
-        document.getElementById("editModal");
+        document.getElementById(
+            "editModal"
+        );
 
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
+
+    modal.classList.remove(
+        "hidden"
+    );
+
+    modal.classList.add(
+        "flex"
+    );
+
 }
 
+
+/* =====================================================
+   CLOSE EDIT
+===================================================== */
 
 function closeEdit() {
 
     const modal =
-        document.getElementById("editModal");
+        document.getElementById(
+            "editModal"
+        );
 
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
+
+    modal.classList.add(
+        "hidden"
+    );
+
+    modal.classList.remove(
+        "flex"
+    );
+
 }
 
 
 /* =====================================================
    SAVE EDIT
-   ===================================================== */
+===================================================== */
 
 async function saveEdit() {
 
     const id =
-        document.getElementById("editId").value;
+        document.getElementById(
+            "editId"
+        ).value;
+
 
     const name =
-        document.getElementById("editName").value.trim();
+        document.getElementById(
+            "editName"
+        ).value.trim();
+
 
     const bonus =
-        document.getElementById("editBonus").value.trim();
+        document.getElementById(
+            "editBonus"
+        ).value.trim();
+
 
     const price =
-        Number(document.getElementById("editPrice").value);
+        Number(
+            document.getElementById(
+                "editPrice"
+            ).value
+        );
+
 
     const icon =
-        document.getElementById("editIcon").value.trim();
+        document.getElementById(
+            "editIcon"
+        ).value.trim();
+
 
     const highlight =
-        document.getElementById("editHighlight").checked;
+        document.getElementById(
+            "editHighlight"
+        ).checked;
+
 
     const active =
-        document.getElementById("editActive").checked;
+        document.getElementById(
+            "editActive"
+        ).checked;
 
 
-    const { error } =
-        await supabaseClient
-        .from("packages")
-        .update({
-            name: name,
-            bonus: bonus,
-            price: price,
-            icon: icon,
-            highlight: highlight,
-            active: active
-        })
-        .eq("id", id);
+    /* =========================
+       VALIDATION
+    ========================= */
 
+    if (!id) {
 
-    if(error) {
-
-        alert("Update failed:\n" + error.message);
+        alert(
+            "Package ID is missing."
+        );
 
         return;
+
     }
 
 
-    closeEdit();
+    if (!name) {
 
-    await loadPackages();
+        alert(
+            "Package name is required."
+        );
 
-    alert("Package updated successfully.");
+        return;
+
+    }
+
+
+    if (
+        !Number.isFinite(price) ||
+        price <= 0
+    ) {
+
+        alert(
+            "Please enter a valid price."
+        );
+
+        return;
+
+    }
+
+
+    /* =========================
+       UPDATE DATA
+    ========================= */
+
+    const updateData = {
+
+        name: name,
+
+        bonus: bonus,
+
+        price: price,
+
+        icon:
+            icon ||
+            "fa-solid fa-gem",
+
+        highlight:
+            highlight,
+
+        active:
+            active
+
+    };
+
+
+    console.log(
+        "UPDATING PACKAGE:",
+        {
+            id: id,
+            ...updateData
+        }
+    );
+
+
+    const button =
+        document.getElementById(
+            "saveEditBtn"
+        );
+
+
+    button.disabled = true;
+
+    button.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin mr-1"></i>
+        Saving...
+    `;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+            .from("packages")
+            .update(
+                updateData
+            )
+            .eq(
+                "id",
+                id
+            )
+            .select();
+
+
+        console.log(
+            "SUPABASE UPDATE RESULT:",
+            {
+                data,
+                error
+            }
+        );
+
+
+        /* =========================
+           SUPABASE ERROR
+        ========================= */
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        /* =========================
+           NO ROW UPDATED
+        ========================= */
+
+        if (
+            !data ||
+            data.length === 0
+        ) {
+
+            alert(
+                "Update was not applied.\n\n" +
+                "Supabase returned 0 updated rows.\n\n" +
+                "This usually means the UPDATE permission/RLS policy is blocking the operation."
+            );
+
+            return;
+
+        }
+
+
+        /* =========================
+           SUCCESS
+        ========================= */
+
+        console.log(
+            "UPDATED PACKAGE:",
+            data[0]
+        );
+
+
+        closeEdit();
+
+
+        await loadPackages();
+
+
+        alert(
+            "Package updated successfully!\n\n" +
+            "New Price: " +
+            Number(
+                data[0].price
+            ).toLocaleString() +
+            " Ks"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "UPDATE PACKAGE ERROR:",
+            error
+        );
+
+
+        alert(
+            "Update failed:\n\n" +
+            (
+                error.message ||
+                String(error)
+            )
+        );
+
+
+    } finally {
+
+        button.disabled = false;
+
+        button.innerHTML = `
+            <i class="fa-solid fa-floppy-disk mr-1"></i>
+            Save Changes
+        `;
+
+    }
+
 }
 
 
 /* =====================================================
-   ACTIVE / OFF
-   ===================================================== */
+   TOGGLE ACTIVE
+===================================================== */
 
-async function toggleActive(id, current) {
+async function toggleActive(
+    id,
+    current
+) {
 
-    const { error } =
-        await supabaseClient
-        .from("packages")
-        .update({
-            active: !current
-        })
-        .eq("id", id);
+    if (!id) {
 
-
-    if(error) {
-
-        alert("Failed:\n" + error.message);
+        alert(
+            "Package ID is missing."
+        );
 
         return;
+
     }
 
 
-    loadPackages();
+    const newStatus =
+        !toBoolean(current);
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+            .from("packages")
+            .update({
+
+                active:
+                    newStatus
+
+            })
+            .eq(
+                "id",
+                id
+            )
+            .select();
+
+
+        console.log(
+            "TOGGLE RESULT:",
+            {
+                data,
+                error
+            }
+        );
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        if (
+            !data ||
+            data.length === 0
+        ) {
+
+            alert(
+                "Status was not changed.\n\n" +
+                "Supabase returned 0 updated rows."
+            );
+
+            return;
+
+        }
+
+
+        await loadPackages();
+
+
+    } catch (error) {
+
+        console.error(
+            "TOGGLE ERROR:",
+            error
+        );
+
+
+        alert(
+            "Failed to change status:\n\n" +
+            (
+                error.message ||
+                String(error)
+            )
+        );
+
+    }
+
 }
 
 
 /* =====================================================
    ESCAPE HTML
-   ===================================================== */
+===================================================== */
 
 function escapeHtml(value) {
 
-    return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
 }
+
+
+/* =====================================================
+   CLOSE MODAL WHEN CLICK OUTSIDE
+===================================================== */
+
+document
+.getElementById("editModal")
+.addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            event.target === this
+        ) {
+
+            closeEdit();
+
+        }
+
+    }
+);
 
 </script>
 
