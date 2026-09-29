@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,274 +7,599 @@
 <title>IVR Admin Panel</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+rel="stylesheet">
+
+<script>
+tailwind.config = {
+    darkMode: 'class',
+    theme: {
+        extend: {
+            fontFamily: {
+                sans: ['Inter', 'sans-serif']
+            }
+        }
+    }
+};
+</script>
+
 <style>
+* {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: Inter, sans-serif;
+    background: #030712;
+    color: #f3f4f6;
+}
+
+.glass {
+    background: rgba(17,24,39,.75);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+input, select {
+    outline: none;
+}
+
+input:focus, select:focus {
+    border-color: #06b6d4 !important;
+    box-shadow: 0 0 0 2px rgba(6,182,212,.12);
 }
 </style>
 </head>
 
-<body class="bg-slate-950 text-white min-h-screen">
+<body>
 
-<div class="max-w-6xl mx-auto px-4 py-8">
+<header class="sticky top-0 z-40 glass border-b border-gray-800">
 
-    <div class="mb-8">
-        <h1 class="text-3xl font-black">
-            IVR <span class="text-cyan-400">Admin Panel</span>
-        </h1>
+<div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
 
-        <p class="text-gray-400 mt-1">
-            Manage Diamonds & UC Packages
-        </p>
-    </div>
+<div class="flex items-center gap-3">
 
+<div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500 to-emerald-400 flex items-center justify-center text-gray-950">
+<i class="fa-solid fa-bolt text-xl"></i>
+</div>
 
-    <!-- ADD PACKAGE -->
+<div>
+<h1 class="font-black text-lg">
+IVR <span class="text-cyan-400">ADMIN</span>
+</h1>
 
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 mb-8">
+<p class="text-[10px] text-gray-500">
+Package Management Panel
+</p>
+</div>
 
-        <h2 class="text-xl font-bold mb-5">
-            ➕ Add New Package
-        </h2>
+</div>
 
-        <div class="grid md:grid-cols-2 gap-4">
+<div class="text-xs text-emerald-400 flex items-center gap-2">
+<span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+Database Online
+</div>
 
-            <div>
-                <label class="text-sm text-gray-400">
-                    Game
-                </label>
+</div>
 
-                <select id="game"
-                    class="w-full mt-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3">
+</header>
 
-                    <option value="mlbb">
-                        Mobile Legends
-                    </option>
 
-                    <option value="pubg">
-                        PUBG Mobile
-                    </option>
+<main class="max-w-7xl mx-auto px-4 py-6">
 
-                </select>
-            </div>
+<!-- DASHBOARD -->
 
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
 
-            <div>
-                <label class="text-sm text-gray-400">
-                    Package ID
-                </label>
+<div class="glass rounded-2xl p-4">
+<p class="text-xs text-gray-500">Total Packages</p>
+<p id="totalPackages" class="text-2xl font-black text-cyan-400 mt-1">0</p>
+</div>
 
-                <input
-                    id="package_id"
-                    placeholder="ml_9 / pubg_6"
-                    class="w-full mt-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3">
-            </div>
+<div class="glass rounded-2xl p-4">
+<p class="text-xs text-gray-500">MLBB</p>
+<p id="mlbbCount" class="text-2xl font-black text-blue-400 mt-1">0</p>
+</div>
 
+<div class="glass rounded-2xl p-4">
+<p class="text-xs text-gray-500">PUBG</p>
+<p id="pubgCount" class="text-2xl font-black text-amber-400 mt-1">0</p>
+</div>
 
-            <div>
-                <label class="text-sm text-gray-400">
-                    Package Name
-                </label>
+<div class="glass rounded-2xl p-4">
+<p class="text-xs text-gray-500">Active</p>
+<p id="activeCount" class="text-2xl font-black text-emerald-400 mt-1">0</p>
+</div>
 
-                <input
-                    id="name"
-                    placeholder="500 Diamonds / 660 UC"
-                    class="w-full mt-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3">
-            </div>
+</div>
 
 
-            <div>
-                <label class="text-sm text-gray-400">
-                    Bonus
-                </label>
+<!-- ADD PACKAGE -->
 
-                <input
-                    id="bonus"
-                    placeholder="+50 Bonus"
-                    class="w-full mt-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3">
-            </div>
+<section class="glass rounded-2xl p-5 mb-6">
 
+<div class="flex items-center justify-between mb-5">
 
-            <div>
-                <label class="text-sm text-gray-400">
-                    Price (Ks)
-                </label>
+<div>
+<h2 class="font-black text-lg">
+<i class="fa-solid fa-plus text-cyan-400 mr-2"></i>
+Add New Package
+</h2>
 
-                <input
-                    id="price"
-                    type="number"
-                    placeholder="25000"
-                    class="w-full mt-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3">
-            </div>
+<p class="text-xs text-gray-500 mt-1">
+Add Diamonds or UC without editing your website code.
+</p>
+</div>
 
+</div>
 
-            <div>
-                <label class="text-sm text-gray-400">
-                    Icon
-                </label>
 
-                <input
-                    id="icon"
-                    value="fa-solid fa-gem"
-                    class="w-full mt-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3">
-            </div>
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-        </div>
+<div>
+<label class="text-xs text-gray-400">Game</label>
 
+<select id="game"
+class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
 
-        <div class="flex items-center gap-6 mt-5">
+<option value="mlbb">Mobile Legends</option>
+<option value="pubg">PUBG Mobile</option>
 
-            <label class="flex items-center gap-2">
-                <input type="checkbox" id="highlight">
-                <span class="text-sm">
-                    HOT Package
-                </span>
-            </label>
+</select>
+</div>
 
 
-            <label class="flex items-center gap-2">
-                <input type="checkbox" id="active" checked>
-                <span class="text-sm">
-                    Active
-                </span>
-            </label>
+<div>
+<label class="text-xs text-gray-400">Package Name</label>
 
-        </div>
+<input
+id="packageName"
+type="text"
+placeholder="e.g. 429 Diamonds"
+class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+</div>
 
 
-        <button
-            onclick="addPackage()"
-            class="mt-6 w-full md:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-black font-black">
+<div>
+<label class="text-xs text-gray-400">Bonus</label>
 
-            ➕ Add Package
+<input
+id="bonus"
+type="text"
+placeholder="+43 Bonus"
+class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+</div>
 
-        </button>
 
-    </div>
+<div>
+<label class="text-xs text-gray-400">Price (Ks)</label>
 
+<input
+id="price"
+type="number"
+placeholder="23000"
+class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+</div>
 
-    <!-- PACKAGE LIST -->
 
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+<div>
+<label class="text-xs text-gray-400">Icon</label>
 
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
+<input
+id="icon"
+type="text"
+value="fa-solid fa-gem"
+class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+</div>
 
-            <h2 class="text-xl font-bold">
-                📦 Packages
-            </h2>
 
-            <button
-                onclick="loadPackages()"
-                class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm">
+<div class="flex items-end">
 
-                🔄 Refresh
+<label class="flex items-center gap-3 bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 w-full cursor-pointer">
 
-            </button>
+<input id="highlight" type="checkbox">
 
-        </div>
+<span class="text-sm">
+HOT Package
+</span>
 
+</label>
 
-        <div id="status"
-            class="hidden mb-4 p-3 rounded-lg text-sm">
-        </div>
+</div>
 
 
-        <div class="overflow-x-auto">
+<div class="flex items-end">
 
-            <table class="w-full text-sm">
+<button
+onclick="addPackage()"
+class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-gray-950 font-black">
 
-                <thead>
+<i class="fa-solid fa-plus mr-1"></i>
+Add Package
 
-                    <tr class="border-b border-slate-800 text-gray-400">
+</button>
 
-                        <th class="text-left p-3">Game</th>
-                        <th class="text-left p-3">Package</th>
-                        <th class="text-left p-3">Bonus</th>
-                        <th class="text-left p-3">Price</th>
-                        <th class="text-left p-3">Status</th>
+</div>
 
-                    </tr>
+</div>
 
-                </thead>
+</section>
 
-                <tbody id="packageList">
 
-                    <tr>
-                        <td colspan="5"
-                            class="p-6 text-center text-gray-500">
+<!-- PACKAGE LIST -->
 
-                            Loading...
+<section class="glass rounded-2xl p-5">
 
-                        </td>
-                    </tr>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5">
 
-                </tbody>
+<div>
+<h2 class="font-black text-lg">
+<i class="fa-solid fa-box-open text-cyan-400 mr-2"></i>
+Packages
+</h2>
 
-            </table>
+<p class="text-xs text-gray-500">
+Manage prices, status and packages.
+</p>
+</div>
 
-        </div>
+<select
+id="filterGame"
+onchange="loadPackages()"
+class="bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-xs">
 
-    </div>
+<option value="all">All Games</option>
+<option value="mlbb">Mobile Legends</option>
+<option value="pubg">PUBG Mobile</option>
+
+</select>
+
+</div>
+
+
+<div id="packageList" class="space-y-3">
+
+<div class="text-center py-10 text-gray-500">
+<i class="fa-solid fa-spinner fa-spin text-xl"></i>
+<p class="text-xs mt-2">Loading packages...</p>
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<!-- EDIT MODAL -->
+
+<div
+id="editModal"
+class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md items-center justify-center p-4">
+
+<div class="glass rounded-2xl p-5 w-full max-w-md">
+
+<div class="flex justify-between items-center mb-5">
+
+<h3 class="font-black text-lg">
+Edit Package
+</h3>
+
+<button onclick="closeEdit()"
+class="text-gray-400 hover:text-white">
+
+<i class="fa-solid fa-xmark"></i>
+
+</button>
+
+</div>
+
+
+<input id="editId" type="hidden">
+
+
+<div class="space-y-4">
+
+<div>
+<label class="text-xs text-gray-400">Package Name</label>
+
+<input id="editName"
+class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+</div>
+
+
+<div>
+<label class="text-xs text-gray-400">Bonus</label>
+
+<input id="editBonus"
+class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+</div>
+
+
+<div>
+<label class="text-xs text-gray-400">Price</label>
+
+<input id="editPrice"
+type="number"
+class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+</div>
+
+
+<div>
+<label class="text-xs text-gray-400">Icon</label>
+
+<input id="editIcon"
+class="w-full mt-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-3 text-sm">
+</div>
+
+
+<label class="flex items-center gap-3">
+
+<input id="editHighlight" type="checkbox">
+
+<span class="text-sm">HOT Package</span>
+
+</label>
+
+
+<label class="flex items-center gap-3">
+
+<input id="editActive" type="checkbox">
+
+<span class="text-sm">Active</span>
+
+</label>
+
+
+<button
+onclick="saveEdit()"
+class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-gray-950 font-black">
+
+Save Changes
+
+</button>
+
+</div>
+
+</div>
 
 </div>
 
 
 <script>
 
-/* =========================================
+/* =====================================================
    SUPABASE CONFIG
-========================================= */
+   ===================================================== */
 
 const SUPABASE_URL =
-    "https://pjiiipywtywkztgjpmro.supabase.co/rest/v1/";
+"https://pjiiipywtywkztgjpmro.supabase.co/rest/v1/";
 
 const SUPABASE_PUBLISHABLE_KEY =
-    "sb_publishable_6Vjf1hUSWxI2HXRJ9eSHfw_OU8Vm2G5";
+"sb_publishable_6Vjf1hUSWxI2HXRJ9eSHfw_OU8Vm2G5";
 
 
 const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-    );
+supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
 
 
-/* =========================================
-   STATUS
-========================================= */
+/* =====================================================
+   LOAD
+   ===================================================== */
 
-function showStatus(message, success = true) {
+window.addEventListener("load", loadPackages);
 
-    const box =
-        document.getElementById("status");
 
-    box.innerText = message;
+/* =====================================================
+   LOAD PACKAGES
+   ===================================================== */
 
-    box.className =
-        "mb-4 p-3 rounded-lg text-sm " +
-        (success
-            ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-            : "bg-red-500/20 text-red-300 border border-red-500/30");
+async function loadPackages() {
+
+    const list =
+        document.getElementById("packageList");
+
+    const filter =
+        document.getElementById("filterGame").value;
+
+
+    list.innerHTML = `
+        <div class="text-center py-10 text-gray-500">
+            <i class="fa-solid fa-spinner fa-spin text-xl"></i>
+            <p class="text-xs mt-2">Loading packages...</p>
+        </div>
+    `;
+
+
+    let query =
+        supabaseClient
+        .from("packages")
+        .select("*")
+        .order("id", {ascending:true});
+
+
+    if(filter !== "all") {
+        query = query.eq("game", filter);
+    }
+
+
+    const { data, error } = await query;
+
+
+    if(error) {
+
+        console.error(error);
+
+        list.innerHTML = `
+            <div class="text-center py-8 text-red-400 text-sm">
+                Failed to load packages.
+                <br>
+                <span class="text-xs text-gray-500">
+                ${escapeHtml(error.message)}
+                </span>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    updateStats(data || []);
+
+
+    if(!data.length) {
+
+        list.innerHTML = `
+            <div class="text-center py-10 text-gray-500">
+                No packages found.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    list.innerHTML = "";
+
+
+    data.forEach(pkg => {
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "bg-gray-950/70 border border-gray-800 rounded-xl p-4 flex flex-col md:flex-row md:items-center gap-4";
+
+
+        card.innerHTML = `
+
+            <div class="w-11 h-11 shrink-0 rounded-xl
+                bg-cyan-500/10 text-cyan-400
+                flex items-center justify-center">
+
+                <i class="${escapeHtml(pkg.icon || 'fa-solid fa-gem')}"></i>
+
+            </div>
+
+
+            <div class="flex-1">
+
+                <div class="flex items-center gap-2 flex-wrap">
+
+                    <span class="font-bold text-white">
+                        ${escapeHtml(pkg.name)}
+                    </span>
+
+                    ${pkg.highlight ? `
+                        <span class="text-[9px] bg-amber-500 text-black px-2 py-0.5 rounded font-black">
+                            HOT
+                        </span>
+                    ` : ""}
+
+                    ${pkg.active ? `
+                        <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded">
+                            ACTIVE
+                        </span>
+                    ` : `
+                        <span class="text-[9px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded">
+                            OFF
+                        </span>
+                    `}
+
+                </div>
+
+
+                <div class="text-xs text-gray-500 mt-1">
+
+                    ${pkg.game === "mlbb"
+                        ? "Mobile Legends"
+                        : "PUBG Mobile"}
+
+                    • ${escapeHtml(pkg.bonus || "")}
+
+                </div>
+
+            </div>
+
+
+            <div class="text-emerald-400 font-black">
+
+                ${Number(pkg.price).toLocaleString()} Ks
+
+            </div>
+
+
+            <div class="flex gap-2">
+
+                <button
+                    onclick='openEdit(${JSON.stringify(pkg)})'
+                    class="px-3 py-2 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+
+                    <i class="fa-solid fa-pen"></i>
+
+                </button>
+
+
+                <button
+                    onclick="toggleActive(${pkg.id}, ${pkg.active})"
+                    class="px-3 py-2 rounded-lg bg-gray-800 text-gray-300">
+
+                    <i class="fa-solid ${pkg.active ? 'fa-eye-slash' : 'fa-eye'}"></i>
+
+                </button>
+
+            </div>
+
+        `;
+
+
+        list.appendChild(card);
+
+    });
 
 }
 
 
-/* =========================================
+/* =====================================================
+   STATS
+   ===================================================== */
+
+function updateStats(data) {
+
+    document.getElementById("totalPackages").innerText =
+        data.length;
+
+    document.getElementById("mlbbCount").innerText =
+        data.filter(x => x.game === "mlbb").length;
+
+    document.getElementById("pubgCount").innerText =
+        data.filter(x => x.game === "pubg").length;
+
+    document.getElementById("activeCount").innerText =
+        data.filter(x => x.active).length;
+}
+
+
+/* =====================================================
    ADD PACKAGE
-========================================= */
+   ===================================================== */
 
 async function addPackage() {
 
     const game =
         document.getElementById("game").value;
 
-    const package_id =
-        document.getElementById("package_id").value.trim();
-
     const name =
-        document.getElementById("name").value.trim();
+        document.getElementById("packageName").value.trim();
 
     const bonus =
         document.getElementById("bonus").value.trim();
@@ -288,16 +613,10 @@ async function addPackage() {
     const highlight =
         document.getElementById("highlight").checked;
 
-    const active =
-        document.getElementById("active").checked;
 
+    if(!name || !price) {
 
-    if (!package_id || !name || !price) {
-
-        showStatus(
-            "Please fill Package ID, Name and Price.",
-            false
-        );
+        alert("Package name and price are required.");
 
         return;
     }
@@ -305,163 +624,182 @@ async function addPackage() {
 
     const { error } =
         await supabaseClient
-            .from("packages")
-            .insert({
-
-                game: game,
-                package_id: package_id,
-                name: name,
-                bonus: bonus,
-                price: price,
-                icon: icon,
-                highlight: highlight,
-                active: active
-
-            });
+        .from("packages")
+        .insert([{
+            game: game,
+            name: name,
+            bonus: bonus,
+            price: price,
+            icon: icon || "fa-solid fa-gem",
+            highlight: highlight,
+            active: true
+        }]);
 
 
-    if (error) {
+    if(error) {
 
-        console.error(error);
-
-        showStatus(
-            error.message,
-            false
-        );
+        alert("Failed to add package:\n" + error.message);
 
         return;
     }
 
 
-    showStatus(
-        "✅ Package added successfully!"
-    );
-
-
-    document.getElementById("package_id").value = "";
-    document.getElementById("name").value = "";
+    document.getElementById("packageName").value = "";
     document.getElementById("bonus").value = "";
     document.getElementById("price").value = "";
     document.getElementById("highlight").checked = false;
 
-    loadPackages();
 
+    await loadPackages();
+
+    alert("Package added successfully.");
 }
 
 
-/* =========================================
-   LOAD PACKAGES
-========================================= */
+/* =====================================================
+   EDIT
+   ===================================================== */
 
-async function loadPackages() {
+function openEdit(pkg) {
 
-    const list =
-        document.getElementById("packageList");
+    document.getElementById("editId").value =
+        pkg.id;
+
+    document.getElementById("editName").value =
+        pkg.name || "";
+
+    document.getElementById("editBonus").value =
+        pkg.bonus || "";
+
+    document.getElementById("editPrice").value =
+        pkg.price || "";
+
+    document.getElementById("editIcon").value =
+        pkg.icon || "fa-solid fa-gem";
+
+    document.getElementById("editHighlight").checked =
+        !!pkg.highlight;
+
+    document.getElementById("editActive").checked =
+        !!pkg.active;
 
 
-    list.innerHTML = `
-        <tr>
-            <td colspan="5"
-                class="p-6 text-center text-gray-500">
-                Loading...
-            </td>
-        </tr>
-    `;
+    const modal =
+        document.getElementById("editModal");
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+}
 
 
-    const { data, error } =
+function closeEdit() {
+
+    const modal =
+        document.getElementById("editModal");
+
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+}
+
+
+/* =====================================================
+   SAVE EDIT
+   ===================================================== */
+
+async function saveEdit() {
+
+    const id =
+        document.getElementById("editId").value;
+
+    const name =
+        document.getElementById("editName").value.trim();
+
+    const bonus =
+        document.getElementById("editBonus").value.trim();
+
+    const price =
+        Number(document.getElementById("editPrice").value);
+
+    const icon =
+        document.getElementById("editIcon").value.trim();
+
+    const highlight =
+        document.getElementById("editHighlight").checked;
+
+    const active =
+        document.getElementById("editActive").checked;
+
+
+    const { error } =
         await supabaseClient
-            .from("packages")
-            .select("*")
-            .order("game")
-            .order("id");
+        .from("packages")
+        .update({
+            name: name,
+            bonus: bonus,
+            price: price,
+            icon: icon,
+            highlight: highlight,
+            active: active
+        })
+        .eq("id", id);
 
 
-    if (error) {
+    if(error) {
 
-        console.error(error);
-
-        list.innerHTML = `
-            <tr>
-                <td colspan="5"
-                    class="p-6 text-center text-red-400">
-                    ${error.message}
-                </td>
-            </tr>
-        `;
+        alert("Update failed:\n" + error.message);
 
         return;
     }
 
 
-    if (!data || data.length === 0) {
+    closeEdit();
 
-        list.innerHTML = `
-            <tr>
-                <td colspan="5"
-                    class="p-6 text-center text-gray-500">
-                    No packages found.
-                </td>
-            </tr>
-        `;
+    await loadPackages();
 
-        return;
-    }
-
-
-    list.innerHTML = "";
-
-
-    data.forEach(pkg => {
-
-        const row =
-            document.createElement("tr");
-
-        row.className =
-            "border-b border-slate-800";
-
-
-        row.innerHTML = `
-
-            <td class="p-3 font-bold uppercase">
-                ${pkg.game}
-            </td>
-
-            <td class="p-3">
-                ${pkg.name}
-            </td>
-
-            <td class="p-3 text-cyan-400">
-                ${pkg.bonus || "-"}
-            </td>
-
-            <td class="p-3 text-emerald-400 font-bold">
-                ${Number(pkg.price).toLocaleString()} Ks
-            </td>
-
-            <td class="p-3">
-                ${
-                    pkg.active
-                    ? '<span class="text-emerald-400">● Active</span>'
-                    : '<span class="text-red-400">● Disabled</span>'
-                }
-            </td>
-
-        `;
-
-
-        list.appendChild(row);
-
-    });
-
+    alert("Package updated successfully.");
 }
 
 
-/* =========================================
-   START
-========================================= */
+/* =====================================================
+   ACTIVE / OFF
+   ===================================================== */
 
-loadPackages();
+async function toggleActive(id, current) {
+
+    const { error } =
+        await supabaseClient
+        .from("packages")
+        .update({
+            active: !current
+        })
+        .eq("id", id);
+
+
+    if(error) {
+
+        alert("Failed:\n" + error.message);
+
+        return;
+    }
+
+
+    loadPackages();
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+   ===================================================== */
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
 </script>
 
