@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>IVR Admin Panel</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <link rel="stylesheet"
@@ -18,195 +16,134 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 rel="stylesheet">
 
 <script>
-
 tailwind.config = {
-
-    darkMode: 'class',
-
+    darkMode: "class",
     theme: {
-
         extend: {
-
             fontFamily: {
-
-                sans: ['Inter', 'sans-serif']
-
+                sans: ["Inter", "sans-serif"]
             }
-
         }
-
     }
-
 };
-
 </script>
 
-
 <style>
-
 * {
     box-sizing: border-box;
 }
 
 body {
-
+    margin: 0;
     font-family: Inter, sans-serif;
-
     background: #030712;
-
     color: #f3f4f6;
-
 }
 
 .glass {
-
-    background: rgba(17,24,39,.75);
-
+    background: rgba(17,24,39,.78);
     backdrop-filter: blur(18px);
-
     border: 1px solid rgba(255,255,255,.08);
-
 }
 
 input,
 select {
-
     outline: none;
-
 }
 
 input:focus,
 select:focus {
-
     border-color: #06b6d4 !important;
-
-    box-shadow:
-        0 0 0 2px rgba(6,182,212,.12);
-
+    box-shadow: 0 0 0 2px rgba(6,182,212,.12);
 }
 
 button {
-
     transition: .2s ease;
-
 }
 
 button:active {
-
     transform: scale(.97);
-
 }
-
 </style>
-
 </head>
-
 
 <body>
 
-
 <!-- =====================================================
-     ADMIN LOGIN SCREEN
+     LOGIN
 ===================================================== -->
 
-<div
-id="loginScreen"
+<div id="loginScreen"
 class="fixed inset-0 z-[100] bg-gray-950 flex items-center justify-center p-4">
 
     <div class="glass rounded-3xl p-6 w-full max-w-sm">
 
         <div class="text-center mb-6">
 
-            <div
-            class="w-16 h-16 mx-auto rounded-2xl
+            <div class="w-16 h-16 mx-auto rounded-2xl
             bg-gradient-to-br from-cyan-500 to-emerald-400
-            flex items-center justify-center
-            text-gray-950">
+            flex items-center justify-center text-gray-950">
 
                 <i class="fa-solid fa-lock text-2xl"></i>
 
             </div>
 
-
             <h1 class="font-black text-2xl mt-4">
-
-                IVR
-                <span class="text-cyan-400">
-                    ADMIN
-                </span>
-
+                IVR <span class="text-cyan-400">ADMIN</span>
             </h1>
 
-
             <p class="text-xs text-gray-500 mt-1">
-
                 Secure Admin Login
-
             </p>
 
         </div>
 
-
-        <div class="space-y-4">
-
-
-            <!-- EMAIL -->
+        <form id="loginForm" class="space-y-4">
 
             <div>
 
                 <label class="text-xs text-gray-400">
-
-                    Email
-
+                    Admin Email
                 </label>
 
-
                 <input
-                id="loginEmail"
-                type="email"
-                autocomplete="email"
-                placeholder="Admin email"
-                class="w-full mt-1 bg-gray-900
-                border border-gray-700 rounded-xl
-                px-3 py-3 text-sm">
+                    id="loginEmail"
+                    type="email"
+                    autocomplete="username"
+                    required
+                    placeholder="Enter admin email"
+                    class="w-full mt-1 bg-gray-900
+                    border border-gray-700 rounded-xl
+                    px-3 py-3 text-sm">
 
             </div>
 
-
-            <!-- PASSWORD -->
-
             <div>
 
                 <label class="text-xs text-gray-400">
-
                     Password
-
                 </label>
-
 
                 <div class="relative">
 
                     <input
-                    id="loginPassword"
-                    type="password"
-                    autocomplete="current-password"
-                    placeholder="Password"
-                    class="w-full mt-1 bg-gray-900
-                    border border-gray-700 rounded-xl
-                    px-3 py-3 pr-11 text-sm">
-
+                        id="loginPassword"
+                        type="password"
+                        autocomplete="current-password"
+                        required
+                        placeholder="Enter password"
+                        class="w-full mt-1 bg-gray-900
+                        border border-gray-700 rounded-xl
+                        px-3 py-3 pr-11 text-sm">
 
                     <button
-                    type="button"
-                    onclick="togglePassword()"
-                    class="absolute right-3 top-1/2
-                    -translate-y-1/2
-                    text-gray-500 hover:text-cyan-400">
+                        type="button"
+                        id="togglePasswordBtn"
+                        class="absolute right-3 top-1/2
+                        -translate-y-1/2 text-gray-500">
 
-                        <i
-                        id="passwordEye"
-                        class="fa-solid fa-eye">
-                        </i>
+                        <i id="passwordEye"
+                        class="fa-solid fa-eye"></i>
 
                     </button>
 
@@ -214,32 +151,28 @@ class="fixed inset-0 z-[100] bg-gray-950 flex items-center justify-center p-4">
 
             </div>
 
-
-            <!-- LOGIN BUTTON -->
+            <div id="loginError"
+            class="hidden text-xs text-red-400
+            bg-red-500/10 border border-red-500/20
+            rounded-xl p-3">
+            </div>
 
             <button
-            id="loginBtn"
-            onclick="loginAdmin()"
-            class="w-full py-3 rounded-xl
-            bg-gradient-to-r from-cyan-500
-            to-emerald-500
-            text-gray-950 font-black">
+                id="loginBtn"
+                type="submit"
+                class="w-full py-3 rounded-xl
+                bg-gradient-to-r from-cyan-500
+                to-emerald-500 text-gray-950 font-black">
 
-                <i
-                class="fa-solid fa-right-to-bracket mr-1">
-                </i>
-
+                <i class="fa-solid fa-right-to-bracket mr-1"></i>
                 Login
 
             </button>
 
-
-        </div>
+        </form>
 
     </div>
-
 </div>
-
 
 
 <!-- =====================================================
@@ -248,776 +181,453 @@ class="fixed inset-0 z-[100] bg-gray-950 flex items-center justify-center p-4">
 
 <div id="adminApp" class="hidden">
 
+<header class="sticky top-0 z-40 glass border-b border-gray-800">
 
-<!-- =====================================================
-     HEADER
-===================================================== -->
+    <div class="max-w-7xl mx-auto px-4 py-4
+    flex items-center justify-between">
 
-<header
-class="sticky top-0 z-40 glass border-b border-gray-800">
+        <div class="flex items-center gap-3">
 
-<div
-class="max-w-7xl mx-auto px-4 py-4
-flex items-center justify-between">
+            <div class="w-11 h-11 rounded-xl
+            bg-gradient-to-br from-cyan-500 to-emerald-400
+            flex items-center justify-center text-gray-950">
 
+                <i class="fa-solid fa-bolt text-xl"></i>
 
-    <!-- LOGO -->
+            </div>
 
-    <div class="flex items-center gap-3">
+            <div>
 
-        <div
-        class="w-11 h-11 rounded-xl
-        bg-gradient-to-br from-cyan-500
-        to-emerald-400
-        flex items-center justify-center
-        text-gray-950">
+                <h1 class="font-black text-lg">
+                    IVR <span class="text-cyan-400">ADMIN</span>
+                </h1>
 
-            <i class="fa-solid fa-bolt text-xl"></i>
+                <p class="text-[10px] text-gray-500">
+                    Package Management Panel
+                </p>
+
+            </div>
 
         </div>
 
+        <div class="flex items-center gap-3">
 
-        <div>
+            <div class="hidden sm:flex text-xs
+            text-emerald-400 items-center gap-2">
 
-            <h1 class="font-black text-lg">
+                <span class="w-2 h-2 bg-emerald-400
+                rounded-full animate-pulse"></span>
 
-                IVR
-                <span class="text-cyan-400">
-                    ADMIN
-                </span>
+                Database Online
 
-            </h1>
+            </div>
 
+            <button
+                id="logoutBtn"
+                type="button"
+                class="px-3 py-2 rounded-lg
+                bg-red-500/10 text-red-400
+                border border-red-500/20
+                text-xs font-bold">
 
-            <p class="text-[10px] text-gray-500">
+                <i class="fa-solid fa-right-from-bracket mr-1"></i>
+                Logout
 
-                Package Management Panel
-
-            </p>
+            </button>
 
         </div>
 
     </div>
-
-
-
-    <!-- RIGHT -->
-
-    <div class="flex items-center gap-3">
-
-
-        <div
-        class="hidden sm:flex text-xs
-        text-emerald-400
-        items-center gap-2">
-
-            <span
-            class="w-2 h-2 bg-emerald-400
-            rounded-full animate-pulse">
-            </span>
-
-            Database Online
-
-        </div>
-
-
-        <!-- LOGOUT -->
-
-        <button
-        onclick="logoutAdmin()"
-        class="px-3 py-2 rounded-lg
-        bg-red-500/10
-        text-red-400
-        border border-red-500/20
-        text-xs font-bold">
-
-            <i
-            class="fa-solid fa-right-from-bracket mr-1">
-            </i>
-
-            Logout
-
-        </button>
-
-
-    </div>
-
-</div>
-
 </header>
 
 
+<main class="max-w-7xl mx-auto px-4 py-6">
 
 <!-- =====================================================
-     MAIN
+     STATS
 ===================================================== -->
 
-<main
-class="max-w-7xl mx-auto px-4 py-6">
-
-
-<!-- =====================================================
-     DASHBOARD
-===================================================== -->
-
-<div
-class="grid grid-cols-2 md:grid-cols-4
-gap-4 mb-6">
-
-
-    <!-- TOTAL -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
 
     <div class="glass rounded-2xl p-4">
-
-        <p class="text-xs text-gray-500">
-
-            Total Packages
-
-        </p>
-
-
-        <p
-        id="totalPackages"
-        class="text-2xl font-black
-        text-cyan-400 mt-1">
-
-            0
-
-        </p>
-
+        <p class="text-xs text-gray-500">Total Packages</p>
+        <p id="totalPackages"
+        class="text-2xl font-black text-cyan-400 mt-1">0</p>
     </div>
 
-
-
-    <!-- MLBB -->
-
     <div class="glass rounded-2xl p-4">
-
-        <p class="text-xs text-gray-500">
-
-            MLBB
-
-        </p>
-
-
-        <p
-        id="mlbbCount"
-        class="text-2xl font-black
-        text-blue-400 mt-1">
-
-            0
-
-        </p>
-
+        <p class="text-xs text-gray-500">MLBB</p>
+        <p id="mlbbCount"
+        class="text-2xl font-black text-blue-400 mt-1">0</p>
     </div>
 
-
-
-    <!-- PUBG -->
-
     <div class="glass rounded-2xl p-4">
-
-        <p class="text-xs text-gray-500">
-
-            PUBG
-
-        </p>
-
-
-        <p
-        id="pubgCount"
-        class="text-2xl font-black
-        text-amber-400 mt-1">
-
-            0
-
-        </p>
-
+        <p class="text-xs text-gray-500">PUBG</p>
+        <p id="pubgCount"
+        class="text-2xl font-black text-amber-400 mt-1">0</p>
     </div>
 
-
-
-    <!-- ACTIVE -->
-
     <div class="glass rounded-2xl p-4">
-
-        <p class="text-xs text-gray-500">
-
-            Active
-
-        </p>
-
-
-        <p
-        id="activeCount"
-        class="text-2xl font-black
-        text-emerald-400 mt-1">
-
-            0
-
-        </p>
-
+        <p class="text-xs text-gray-500">Active</p>
+        <p id="activeCount"
+        class="text-2xl font-black text-emerald-400 mt-1">0</p>
     </div>
 
 </div>
-
 
 
 <!-- =====================================================
      ADD PACKAGE
 ===================================================== -->
 
-<section
-class="glass rounded-2xl p-5 mb-6">
+<section class="glass rounded-2xl p-5 mb-6">
 
-
-<div
-class="flex items-center justify-between mb-5">
-
-    <div>
+    <div class="mb-5">
 
         <h2 class="font-black text-lg">
-
-            <i
-            class="fa-solid fa-plus
-            text-cyan-400 mr-2">
-            </i>
-
+            <i class="fa-solid fa-plus text-cyan-400 mr-2"></i>
             Add New Package
-
         </h2>
 
-
         <p class="text-xs text-gray-500 mt-1">
-
-            Add Diamonds or UC without
-            editing your website code.
-
+            Add Diamonds or UC without editing your website code.
         </p>
 
     </div>
 
-</div>
+    <form id="addPackageForm"
+    class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        <div>
+            <label class="text-xs text-gray-400">Game</label>
+
+            <select id="game"
+            class="w-full mt-1 bg-gray-900
+            border border-gray-700 rounded-xl
+            px-3 py-3 text-sm">
+
+                <option value="mlbb">Mobile Legends</option>
+                <option value="pubg">PUBG Mobile</option>
+
+            </select>
+        </div>
 
 
-
-<div
-class="grid md:grid-cols-2
-lg:grid-cols-4 gap-4">
-
-
-    <!-- GAME -->
-
-    <div>
-
-        <label class="text-xs text-gray-400">
-
-            Game
-
-        </label>
-
-
-        <select
-        id="game"
-        class="w-full mt-1 bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3 text-sm">
-
-            <option value="mlbb">
-                Mobile Legends
-            </option>
-
-            <option value="pubg">
-                PUBG Mobile
-            </option>
-
-        </select>
-
-    </div>
-
-
-
-    <!-- NAME -->
-
-    <div>
-
-        <label class="text-xs text-gray-400">
-
-            Package Name
-
-        </label>
-
-
-        <input
-        id="packageName"
-        type="text"
-        placeholder="e.g. 429 Diamonds"
-        class="w-full mt-1 bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3 text-sm">
-
-    </div>
-
-
-
-    <!-- BONUS -->
-
-    <div>
-
-        <label class="text-xs text-gray-400">
-
-            Bonus
-
-        </label>
-
-
-        <input
-        id="bonus"
-        type="text"
-        placeholder="+43 Bonus"
-        class="w-full mt-1 bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3 text-sm">
-
-    </div>
-
-
-
-    <!-- PRICE -->
-
-    <div>
-
-        <label class="text-xs text-gray-400">
-
-            Price (Ks)
-
-        </label>
-
-
-        <input
-        id="price"
-        type="number"
-        min="1"
-        step="1"
-        placeholder="23000"
-        class="w-full mt-1 bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3 text-sm">
-
-    </div>
-
-
-
-    <!-- ICON -->
-
-    <div>
-
-        <label class="text-xs text-gray-400">
-
-            Icon
-
-        </label>
-
-
-        <input
-        id="icon"
-        type="text"
-        value="fa-solid fa-gem"
-        class="w-full mt-1 bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3 text-sm">
-
-    </div>
-
-
-
-    <!-- HOT -->
-
-    <div class="flex items-end">
-
-        <label
-        class="flex items-center gap-3
-        bg-gray-900
-        border border-gray-700
-        rounded-xl px-4 py-3
-        w-full cursor-pointer">
+        <div>
+            <label class="text-xs text-gray-400">
+                Package Name
+            </label>
 
             <input
-            id="highlight"
-            type="checkbox">
-
-            <span class="text-sm">
-
-                HOT Package
-
-            </span>
-
-        </label>
-
-    </div>
+                id="packageName"
+                type="text"
+                required
+                placeholder="e.g. 429 Diamonds"
+                class="w-full mt-1 bg-gray-900
+                border border-gray-700 rounded-xl
+                px-3 py-3 text-sm">
+        </div>
 
 
+        <div>
+            <label class="text-xs text-gray-400">
+                Bonus
+            </label>
 
-    <!-- ADD BUTTON -->
-
-    <div class="flex items-end">
-
-        <button
-        id="addPackageBtn"
-        onclick="addPackage()"
-        class="w-full py-3 rounded-xl
-        bg-gradient-to-r
-        from-cyan-500 to-emerald-500
-        text-gray-950 font-black">
-
-            <i
-            class="fa-solid fa-plus mr-1">
-            </i>
-
-            Add Package
-
-        </button>
-
-    </div>
+            <input
+                id="bonus"
+                type="text"
+                placeholder="+43 Bonus"
+                class="w-full mt-1 bg-gray-900
+                border border-gray-700 rounded-xl
+                px-3 py-3 text-sm">
+        </div>
 
 
-</div>
+        <div>
+            <label class="text-xs text-gray-400">
+                Price (Ks)
+            </label>
+
+            <input
+                id="price"
+                type="number"
+                min="1"
+                step="1"
+                required
+                placeholder="23000"
+                class="w-full mt-1 bg-gray-900
+                border border-gray-700 rounded-xl
+                px-3 py-3 text-sm">
+        </div>
+
+
+        <div>
+            <label class="text-xs text-gray-400">
+                Icon
+            </label>
+
+            <input
+                id="icon"
+                type="text"
+                value="fa-solid fa-gem"
+                class="w-full mt-1 bg-gray-900
+                border border-gray-700 rounded-xl
+                px-3 py-3 text-sm">
+        </div>
+
+
+        <div class="flex items-end">
+
+            <label class="flex items-center gap-3
+            bg-gray-900 border border-gray-700
+            rounded-xl px-4 py-3 w-full cursor-pointer">
+
+                <input id="highlight" type="checkbox">
+
+                <span class="text-sm">
+                    HOT Package
+                </span>
+
+            </label>
+
+        </div>
+
+
+        <div class="flex items-end">
+
+            <button
+                id="addPackageBtn"
+                type="submit"
+                class="w-full py-3 rounded-xl
+                bg-gradient-to-r from-cyan-500
+                to-emerald-500 text-gray-950 font-black">
+
+                <i class="fa-solid fa-plus mr-1"></i>
+                Add Package
+
+            </button>
+
+        </div>
+
+    </form>
 
 </section>
-
 
 
 <!-- =====================================================
      PACKAGE LIST
 ===================================================== -->
 
-<section
-class="glass rounded-2xl p-5">
+<section class="glass rounded-2xl p-5">
+
+    <div class="flex flex-col md:flex-row
+    md:items-center justify-between
+    gap-3 mb-5">
+
+        <div>
+
+            <h2 class="font-black text-lg">
+
+                <i class="fa-solid fa-box-open
+                text-cyan-400 mr-2"></i>
+
+                Packages
+
+            </h2>
+
+            <p class="text-xs text-gray-500 mt-1">
+                Manage prices, status and packages.
+            </p>
+
+        </div>
 
 
-<div
-class="flex flex-col md:flex-row
-md:items-center justify-between
-gap-3 mb-5">
+        <select
+            id="filterGame"
+            class="bg-gray-900 border border-gray-700
+            rounded-xl px-3 py-2 text-xs">
 
+            <option value="all">All Games</option>
+            <option value="mlbb">Mobile Legends</option>
+            <option value="pubg">PUBG Mobile</option>
 
-    <div>
-
-        <h2 class="font-black text-lg">
-
-            <i
-            class="fa-solid fa-box-open
-            text-cyan-400 mr-2">
-            </i>
-
-            Packages
-
-        </h2>
-
-
-        <p class="text-xs text-gray-500 mt-1">
-
-            Manage prices, status and packages.
-
-        </p>
-
-    </div>
-
-
-
-    <select
-    id="filterGame"
-    onchange="loadPackages()"
-    class="bg-gray-900
-    border border-gray-700
-    rounded-xl px-3 py-2 text-xs">
-
-        <option value="all">
-            All Games
-        </option>
-
-        <option value="mlbb">
-            Mobile Legends
-        </option>
-
-        <option value="pubg">
-            PUBG Mobile
-        </option>
-
-    </select>
-
-
-</div>
-
-
-
-<div
-id="packageList"
-class="space-y-3">
-
-
-    <div
-    class="text-center py-10 text-gray-500">
-
-        <i
-        class="fa-solid fa-spinner
-        fa-spin text-xl">
-        </i>
-
-
-        <p class="text-xs mt-2">
-
-            Loading packages...
-
-        </p>
+        </select>
 
     </div>
 
 
-</div>
+    <div id="packageList" class="space-y-3">
+
+        <div class="text-center py-10 text-gray-500">
+
+            <i class="fa-solid fa-spinner fa-spin text-xl"></i>
+
+            <p class="text-xs mt-2">
+                Loading packages...
+            </p>
+
+        </div>
+
+    </div>
 
 </section>
 
 </main>
-
-
 </div>
-
 
 
 <!-- =====================================================
      EDIT MODAL
 ===================================================== -->
 
-<div
-id="editModal"
+<div id="editModal"
 class="fixed inset-0 z-50 hidden
 bg-black/80 backdrop-blur-md
 items-center justify-center p-4">
 
+    <div class="glass rounded-2xl p-5
+    w-full max-w-md">
 
-<div
-class="glass rounded-2xl p-5
-w-full max-w-md">
+        <div class="flex justify-between
+        items-center mb-5">
 
+            <h3 class="font-black text-lg">
+                Edit Package
+            </h3>
 
-<div
-class="flex justify-between
-items-center mb-5">
+            <button id="closeEditBtn"
+            type="button"
+            class="text-gray-400 hover:text-white">
 
+                <i class="fa-solid fa-xmark"></i>
 
-    <h3 class="font-black text-lg">
+            </button>
 
-        Edit Package
-
-    </h3>
-
-
-    <button
-    onclick="closeEdit()"
-    class="text-gray-400
-    hover:text-white">
-
-        <i
-        class="fa-solid fa-xmark">
-        </i>
-
-    </button>
-
-</div>
+        </div>
 
 
-
-<input
-id="editId"
-type="hidden">
+        <input id="editId" type="hidden">
 
 
+        <form id="editForm" class="space-y-4">
 
-<div class="space-y-4">
+            <div>
 
+                <label class="text-xs text-gray-400">
+                    Package Name
+                </label>
 
-    <!-- NAME -->
+                <input id="editName"
+                type="text"
+                required
+                class="w-full mt-1 bg-gray-900
+                border border-gray-700 rounded-xl
+                px-3 py-3 text-sm">
 
-    <div>
-
-        <label
-        class="text-xs text-gray-400">
-
-            Package Name
-
-        </label>
-
-
-        <input
-        id="editName"
-        type="text"
-        class="w-full mt-1
-        bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3
-        text-sm">
-
-    </div>
+            </div>
 
 
+            <div>
 
-    <!-- BONUS -->
+                <label class="text-xs text-gray-400">
+                    Bonus
+                </label>
 
-    <div>
+                <input id="editBonus"
+                type="text"
+                class="w-full mt-1 bg-gray-900
+                border border-gray-700 rounded-xl
+                px-3 py-3 text-sm">
 
-        <label
-        class="text-xs text-gray-400">
-
-            Bonus
-
-        </label>
-
-
-        <input
-        id="editBonus"
-        type="text"
-        class="w-full mt-1
-        bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3
-        text-sm">
-
-    </div>
+            </div>
 
 
+            <div>
 
-    <!-- PRICE -->
+                <label class="text-xs text-gray-400">
+                    Price (Ks)
+                </label>
 
-    <div>
+                <input id="editPrice"
+                type="number"
+                min="1"
+                required
+                class="w-full mt-1 bg-gray-900
+                border border-gray-700 rounded-xl
+                px-3 py-3 text-sm">
 
-        <label
-        class="text-xs text-gray-400">
-
-            Price (Ks)
-
-        </label>
-
-
-        <input
-        id="editPrice"
-        type="number"
-        min="1"
-        step="1"
-        class="w-full mt-1
-        bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3
-        text-sm">
-
-    </div>
+            </div>
 
 
+            <div>
 
-    <!-- ICON -->
+                <label class="text-xs text-gray-400">
+                    Icon
+                </label>
 
-    <div>
+                <input id="editIcon"
+                type="text"
+                class="w-full mt-1 bg-gray-900
+                border border-gray-700 rounded-xl
+                px-3 py-3 text-sm">
 
-        <label
-        class="text-xs text-gray-400">
-
-            Icon
-
-        </label>
+            </div>
 
 
-        <input
-        id="editIcon"
-        type="text"
-        class="w-full mt-1
-        bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3
-        text-sm">
+            <label class="flex items-center gap-3">
+
+                <input id="editHighlight"
+                type="checkbox">
+
+                <span class="text-sm">
+                    HOT Package
+                </span>
+
+            </label>
+
+
+            <label class="flex items-center gap-3">
+
+                <input id="editActive"
+                type="checkbox">
+
+                <span class="text-sm">
+                    Active
+                </span>
+
+            </label>
+
+
+            <button
+                id="saveEditBtn"
+                type="submit"
+                class="w-full py-3 rounded-xl
+                bg-gradient-to-r from-cyan-500
+                to-emerald-500 text-gray-950 font-black">
+
+                <i class="fa-solid fa-floppy-disk mr-1"></i>
+                Save Changes
+
+            </button>
+
+        </form>
 
     </div>
-
-
-
-    <!-- HOT -->
-
-    <label
-    class="flex items-center gap-3">
-
-        <input
-        id="editHighlight"
-        type="checkbox">
-
-        <span class="text-sm">
-
-            HOT Package
-
-        </span>
-
-    </label>
-
-
-
-    <!-- ACTIVE -->
-
-    <label
-    class="flex items-center gap-3">
-
-        <input
-        id="editActive"
-        type="checkbox">
-
-        <span class="text-sm">
-
-            Active
-
-        </span>
-
-    </label>
-
-
-
-    <!-- SAVE -->
-
-    <button
-    id="saveEditBtn"
-    onclick="saveEdit()"
-    class="w-full py-3 rounded-xl
-    bg-gradient-to-r
-    from-cyan-500 to-emerald-500
-    text-gray-950 font-black">
-
-        <i
-        class="fa-solid fa-floppy-disk mr-1">
-        </i>
-
-        Save Changes
-
-    </button>
-
-
 </div>
-
-</div>
-
-</div>
-
 
 
 <script>
 
-
 /* =====================================================
-   SUPABASE CONFIG
+   SUPABASE
 ===================================================== */
 
 const SUPABASE_URL =
 "https://pjiiipywtywkztgjpmro.supabase.co";
 
-
 const SUPABASE_PUBLISHABLE_KEY =
 "sb_publishable_6Vjf1hUSWxI2HXRJ9eSHfw_OU8Vm2G5";
-
 
 const supabaseClient =
 window.supabase.createClient(
@@ -1026,43 +636,71 @@ window.supabase.createClient(
 );
 
 
-
 /* =====================================================
-   PAGE LOAD
+   ELEMENTS
 ===================================================== */
 
-window.addEventListener(
-    "load",
-    checkAdminSession
-);
+const loginScreen =
+document.getElementById("loginScreen");
 
+const adminApp =
+document.getElementById("adminApp");
+
+const loginForm =
+document.getElementById("loginForm");
+
+const addPackageForm =
+document.getElementById("addPackageForm");
+
+const editForm =
+document.getElementById("editForm");
+
+const loginBtn =
+document.getElementById("loginBtn");
+
+const loginError =
+document.getElementById("loginError");
 
 
 /* =====================================================
-   AUTH SESSION CHECK
+   START
 ===================================================== */
 
-async function checkAdminSession() {
+window.addEventListener("load", async () => {
 
-    try {
+    const {
+        data,
+        error
+    } = await supabaseClient.auth.getSession();
 
-        const {
-            data,
-            error
-        } =
-            await supabaseClient.auth.getSession();
+    if (error) {
+
+        console.error(error);
+
+        showLogin();
+
+        return;
+    }
+
+    if (data.session) {
+
+        showAdminPanel();
+
+    } else {
+
+        showLogin();
+
+    }
+
+});
 
 
-        if (error) {
+/* =====================================================
+   AUTH STATE
+===================================================== */
 
-            throw error;
-
-        }
-
-
-        const session =
-            data?.session;
-
+supabaseClient.auth.onAuthStateChange(
+    (event, session) => {
 
         if (session) {
 
@@ -1074,85 +712,35 @@ async function checkAdminSession() {
 
         }
 
-
-    } catch (error) {
-
-        console.error(
-            "SESSION CHECK ERROR:",
-            error
-        );
-
-        showLogin();
-
     }
-
-}
-
-
-
-/* =====================================================
-   SHOW LOGIN
-===================================================== */
-
-function showLogin() {
-
-    document
-        .getElementById("loginScreen")
-        .classList.remove("hidden");
-
-
-    document
-        .getElementById("adminApp")
-        .classList.add("hidden");
-
-}
-
-
-
-/* =====================================================
-   SHOW ADMIN PANEL
-===================================================== */
-
-async function showAdminPanel() {
-
-    document
-        .getElementById("loginScreen")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("adminApp")
-        .classList.remove("hidden");
-
-
-    await loadPackages();
-
-}
-
+);
 
 
 /* =====================================================
    LOGIN
 ===================================================== */
 
-async function loginAdmin() {
+loginForm.addEventListener(
+"submit",
+async function(event) {
+
+    event.preventDefault();
+
+    hideLoginError();
 
     const email =
-        document
-        .getElementById("loginEmail")
-        .value
-        .trim();
-
+    document.getElementById(
+        "loginEmail"
+    ).value.trim();
 
     const password =
-        document
-        .getElementById("loginPassword")
-        .value;
-
+    document.getElementById(
+        "loginPassword"
+    ).value;
 
     if (!email) {
 
-        alert(
+        showLoginError(
             "Please enter your admin email."
         );
 
@@ -1160,10 +748,9 @@ async function loginAdmin() {
 
     }
 
-
     if (!password) {
 
-        alert(
+        showLoginError(
             "Please enter your password."
         );
 
@@ -1171,21 +758,12 @@ async function loginAdmin() {
 
     }
 
+    loginBtn.disabled = true;
 
-    const button =
-        document
-        .getElementById("loginBtn");
-
-
-    button.disabled = true;
-
-
-    button.innerHTML = `
-        <i class="fa-solid fa-spinner
-        fa-spin mr-1"></i>
+    loginBtn.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin mr-1"></i>
         Logging in...
     `;
-
 
     try {
 
@@ -1193,15 +771,11 @@ async function loginAdmin() {
             data,
             error
         } =
-            await supabaseClient.auth
-            .signInWithPassword({
-
-                email: email,
-
-                password: password
-
-            });
-
+        await supabaseClient.auth
+        .signInWithPassword({
+            email: email,
+            password: password
+        });
 
         if (error) {
 
@@ -1209,18 +783,19 @@ async function loginAdmin() {
 
         }
 
-
-        if (!data?.session) {
+        if (!data.session) {
 
             throw new Error(
-                "Login successful but no session was created."
+                "Login succeeded but session was not created."
             );
 
         }
 
+        document.getElementById(
+            "loginPassword"
+        ).value = "";
 
-        await showAdminPanel();
-
+        showAdminPanel();
 
     } catch (error) {
 
@@ -1229,183 +804,189 @@ async function loginAdmin() {
             error
         );
 
-
-        alert(
-            "Login failed:\n\n" +
-            (
-                error.message ||
-                String(error)
-            )
+        showLoginError(
+            error.message ||
+            "Login failed."
         );
-
 
     } finally {
 
-        button.disabled = false;
+        loginBtn.disabled = false;
 
-
-        button.innerHTML = `
-            <i class="fa-solid
-            fa-right-to-bracket mr-1"></i>
+        loginBtn.innerHTML = `
+            <i class="fa-solid fa-right-to-bracket mr-1"></i>
             Login
         `;
 
     }
 
-}
-
+});
 
 
 /* =====================================================
-   PASSWORD SHOW / HIDE
+   LOGIN ERROR
 ===================================================== */
 
-function togglePassword() {
+function showLoginError(message) {
+
+    loginError.textContent = message;
+
+    loginError.classList.remove("hidden");
+
+}
+
+function hideLoginError() {
+
+    loginError.textContent = "";
+
+    loginError.classList.add("hidden");
+
+}
+
+
+/* =====================================================
+   SHOW / HIDE
+===================================================== */
+
+function showLogin() {
+
+    loginScreen.classList.remove("hidden");
+
+    adminApp.classList.add("hidden");
+
+}
+
+async function showAdminPanel() {
+
+    loginScreen.classList.add("hidden");
+
+    adminApp.classList.remove("hidden");
+
+    await loadPackages();
+
+}
+
+
+/* =====================================================
+   PASSWORD TOGGLE
+===================================================== */
+
+document.getElementById(
+    "togglePasswordBtn"
+).addEventListener(
+"click",
+function() {
 
     const input =
-        document
-        .getElementById(
-            "loginPassword"
-        );
-
+    document.getElementById(
+        "loginPassword"
+    );
 
     const eye =
-        document
-        .getElementById(
-            "passwordEye"
-        );
+    document.getElementById(
+        "passwordEye"
+    );
 
-
-    if (
-        input.type ===
-        "password"
-    ) {
+    if (input.type === "password") {
 
         input.type = "text";
 
-
         eye.className =
-            "fa-solid fa-eye-slash";
+        "fa-solid fa-eye-slash";
 
     } else {
 
         input.type = "password";
 
-
         eye.className =
-            "fa-solid fa-eye";
+        "fa-solid fa-eye";
 
     }
 
-}
-
+});
 
 
 /* =====================================================
    LOGOUT
 ===================================================== */
 
-async function logoutAdmin() {
+document.getElementById(
+    "logoutBtn"
+).addEventListener(
+"click",
+async function() {
 
-    const confirmLogout =
-        confirm(
-            "Are you sure you want to logout?"
-        );
-
-
-    if (!confirmLogout) {
+    if (!confirm(
+        "Are you sure you want to logout?"
+    )) {
 
         return;
 
     }
 
+    const {
+        error
+    } =
+    await supabaseClient.auth.signOut();
 
-    try {
-
-        const {
-            error
-        } =
-            await supabaseClient.auth
-            .signOut();
-
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
-        location.reload();
-
-
-    } catch (error) {
-
-        console.error(
-            "LOGOUT ERROR:",
-            error
-        );
-
+    if (error) {
 
         alert(
             "Logout failed:\n\n" +
-            (
-                error.message ||
-                String(error)
-            )
+            error.message
         );
+
+        return;
 
     }
 
-}
+    showLogin();
 
+});
 
 
 /* =====================================================
-   BOOLEAN NORMALIZER
+   FILTER
+===================================================== */
+
+document.getElementById(
+    "filterGame"
+).addEventListener(
+"change",
+loadPackages
+);
+
+
+/* =====================================================
+   BOOLEAN
 ===================================================== */
 
 function toBoolean(value) {
 
-    if (
-        typeof value ===
-        "boolean"
-    ) {
+    if (typeof value === "boolean") {
 
         return value;
 
     }
 
-
-    if (
-        typeof value ===
-        "number"
-    ) {
+    if (typeof value === "number") {
 
         return value === 1;
 
     }
 
-
-    const text =
-        String(
-            value ?? ""
-        )
+    return [
+        "true",
+        "1",
+        "yes",
+        "on"
+    ].includes(
+        String(value ?? "")
         .trim()
-        .toLowerCase();
-
-
-    return (
-
-        text === "true" ||
-        text === "1" ||
-        text === "yes" ||
-        text === "on"
-
+        .toLowerCase()
     );
 
 }
-
 
 
 /* =====================================================
@@ -1415,89 +996,60 @@ function toBoolean(value) {
 async function loadPackages() {
 
     const list =
-        document.getElementById(
-            "packageList"
-        );
-
-
-    if (!list) {
-
-        return;
-
-    }
-
+    document.getElementById(
+        "packageList"
+    );
 
     const filter =
-        document.getElementById(
-            "filterGame"
-        ).value;
-
+    document.getElementById(
+        "filterGame"
+    ).value;
 
     list.innerHTML = `
-
-        <div
-        class="text-center py-10
-        text-gray-500">
-
-            <i
-            class="fa-solid
-            fa-spinner fa-spin text-xl">
-            </i>
-
+        <div class="text-center py-10 text-gray-500">
+            <i class="fa-solid fa-spinner fa-spin text-xl"></i>
             <p class="text-xs mt-2">
-
                 Loading packages...
-
             </p>
-
         </div>
-
     `;
-
 
     try {
 
         let query =
-            supabaseClient
-            .from("packages")
-            .select(`
-                id,
-                game,
-                name,
-                bonus,
-                price,
-                icon,
-                highlight,
-                active
-            `)
-            .order(
-                "id",
-                {
-                    ascending: true
-                }
-            );
+        supabaseClient
+        .from("packages")
+        .select(`
+            id,
+            game,
+            name,
+            bonus,
+            price,
+            icon,
+            highlight,
+            active
+        `)
+        .order(
+            "id",
+            {
+                ascending: true
+            }
+        );
 
-
-        if (
-            filter !==
-            "all"
-        ) {
+        if (filter !== "all") {
 
             query =
-                query.eq(
-                    "game",
-                    filter
-                );
+            query.eq(
+                "game",
+                filter
+            );
 
         }
-
 
         const {
             data,
             error
-        } =
-            await query;
-
+        } = await query;
 
         if (error) {
 
@@ -1505,98 +1057,65 @@ async function loadPackages() {
 
         }
 
-
         const packages =
-            (
-                data || []
+        (data || []).map(pkg => ({
+
+            id: pkg.id,
+
+            game:
+            String(
+                pkg.game ?? ""
             )
-            .map(
-                pkg => {
+            .trim()
+            .toLowerCase(),
 
-                    return {
+            name:
+            String(
+                pkg.name ?? ""
+            ),
 
-                        id:
-                            pkg.id,
+            bonus:
+            String(
+                pkg.bonus ?? ""
+            ),
 
-                        game:
-                            String(
-                                pkg.game ??
-                                ""
-                            )
-                            .trim()
-                            .toLowerCase(),
+            price:
+            Number(
+                pkg.price
+            ) || 0,
 
-                        name:
-                            String(
-                                pkg.name ??
-                                ""
-                            ),
+            icon:
+            String(
+                pkg.icon ?? ""
+            ).trim()
+            ||
+            "fa-solid fa-gem",
 
-                        bonus:
-                            String(
-                                pkg.bonus ??
-                                ""
-                            ),
+            highlight:
+            toBoolean(
+                pkg.highlight
+            ),
 
-                        price:
-                            Number(
-                                pkg.price
-                            ) || 0,
+            active:
+            toBoolean(
+                pkg.active
+            )
 
-                        icon:
-                            String(
-                                pkg.icon ??
-                                ""
-                            )
-                            .trim()
-                            ||
-                            "fa-solid fa-gem",
-
-                        highlight:
-                            toBoolean(
-                                pkg.highlight
-                            ),
-
-                        active:
-                            toBoolean(
-                                pkg.active
-                            )
-
-                    };
-
-                }
-            );
+        }));
 
 
-        updateStats(
-            packages
-        );
+        updateStats(packages);
 
 
-        if (
-            !packages.length
-        ) {
+        if (!packages.length) {
 
             list.innerHTML = `
-
-                <div
-                class="text-center
-                py-10 text-gray-500">
-
-                    <i
-                    class="fa-solid
-                    fa-box-open
-                    text-2xl mb-2">
-                    </i>
-
+                <div class="text-center py-10 text-gray-500">
+                    <i class="fa-solid fa-box-open text-2xl mb-2"></i>
                     <p class="text-sm">
-
                         No packages found.
-
                     </p>
-
                 </div>
-
             `;
 
             return;
@@ -1607,2182 +1126,185 @@ async function loadPackages() {
         list.innerHTML = "";
 
 
-        packages.forEach(
-            pkg => {
+        packages.forEach(pkg => {
 
-                const card =
-                    document
-                    .createElement(
-                        "div"
-                    );
+            const card =
+            document.createElement("div");
 
-
-                card.className =
-                    "bg-gray-950/70 border " +
-                    "border-gray-800 rounded-xl p-4 " +
-                    "flex flex-col md:flex-row " +
-                    "md:items-center gap-4";
+            card.className =
+            "bg-gray-950/70 border border-gray-800 " +
+            "rounded-xl p-4 flex flex-col md:flex-row " +
+            "md:items-center gap-4";
 
 
-                const gameName =
-                    pkg.game ===
-                    "mlbb"
-                    ?
-                    "Mobile Legends"
-                    :
-                    "PUBG Mobile";
+            const gameName =
+            pkg.game === "mlbb"
+            ? "Mobile Legends"
+            : "PUBG Mobile";
 
 
-                const safePackage =
-                    JSON.stringify(
-                        pkg
-                    )
-                    .replace(
-                        /'/g,
-                        "&#39;"
-                    );
+            const icon =
+            escapeHtml(pkg.icon);
 
 
-                card.innerHTML = `
-
-                    <!-- ICON -->
-
-                    <div
-                    class="w-11 h-11 shrink-0
-                    rounded-xl
-                    bg-cyan-500/10
-                    text-cyan-400
-                    flex items-center
-                    justify-center">
-
-                        <i
-                        class="${escapeHtml(
-                            pkg.icon
-                        )}">
-                        </i>
-
-                    </div>
+            const name =
+            escapeHtml(pkg.name);
 
 
-                    <!-- INFO -->
-
-                    <div class="flex-1">
-
-                        <div
-                        class="flex items-center
-                        gap-2 flex-wrap">
+            const bonus =
+            escapeHtml(pkg.bonus);
 
 
-                            <span
-                            class="font-bold text-white">
+            card.innerHTML = `
 
-                                ${escapeHtml(
-                                    pkg.name
-                                )}
+                <div class="w-11 h-11 shrink-0 rounded-xl
+                bg-cyan-500/10 text-cyan-400
+                flex items-center justify-center">
 
+                    <i class="${icon}"></i>
+
+                </div>
+
+
+                <div class="flex-1">
+
+                    <div class="flex items-center
+                    gap-2 flex-wrap">
+
+                        <span class="font-bold text-white">
+                            ${name}
+                        </span>
+
+                        ${
+                            pkg.highlight
+                            ?
+                            `
+                            <span class="text-[9px]
+                            bg-amber-500 text-black
+                            px-2 py-0.5 rounded font-black">
+                                HOT
                             </span>
+                            `
+                            :
+                            ""
+                        }
 
-
-                            ${
-                                pkg.highlight
-                                ?
-                                `
-                                <span
-                                class="text-[9px]
-                                bg-amber-500
-                                text-black px-2
-                                py-0.5 rounded
-                                font-black">
-
-                                    HOT
-
-                                </span>
-                                `
-                                :
-                                ""
-                            }
-
-
-                            ${
-                                pkg.active
-                                ?
-                                `
-                                <span
-                                class="text-[9px]
-                                bg-emerald-500/20
-                                text-emerald-400
-                                px-2 py-0.5
-                                rounded">
-
-                                    ACTIVE
-
-                                </span>
-                                `
-                                :
-                                `
-                                <span
-                                class="text-[9px]
-                                bg-red-500/20
-                                text-red-400
-                                px-2 py-0.5
-                                rounded">
-
-                                    OFF
-
-                                </span>
-                                `
-                            }
-
-                        </div>
-
-
-                        <div
-                        class="text-xs
-                        text-gray-500 mt-1">
-
-                            ${gameName}
-
-                            •
-
-                            ${escapeHtml(
-                                pkg.bonus
-                            )}
-
-                        </div>
+                        ${
+                            pkg.active
+                            ?
+                            `
+                            <span class="text-[9px]
+                            bg-emerald-500/20
+                            text-emerald-400
+                            px-2 py-0.5 rounded">
+                                ACTIVE
+                            </span>
+                            `
+                            :
+                            `
+                            <span class="text-[9px]
+                            bg-red-500/20
+                            text-red-400
+                            px-2 py-0.5 rounded">
+                                OFF
+                            </span>
+                            `
+                        }
 
                     </div>
 
-
-                    <!-- PRICE -->
-
-                    <div
-                    class="text-emerald-400
-                    font-black
-                    whitespace-nowrap">
-
-                        ${Number(
-                            pkg.price
-                        ).toLocaleString()}
-                        Ks
-
+                    <div class="text-xs text-gray-500 mt-1">
+                        ${gameName} • ${bonus}
                     </div>
 
-
-                    <!-- BUTTONS -->
-
-                    <div
-                    class="flex gap-2">
+                </div>
 
 
-                        <!-- EDIT -->
+                <div class="text-emerald-400
+                font-black whitespace-nowrap">
 
-                        <button
-                        onclick='openEdit(${safePackage})'
-                        class="px-3 py-2
-                        rounded-lg
-                        bg-cyan-500/10
+                    ${Number(pkg.price)
+                    .toLocaleString()} Ks
+
+                </div>
+
+
+                <div class="flex gap-2">
+
+                    <button
+                        type="button"
+                        class="edit-btn px-3 py-2
+                        rounded-lg bg-cyan-500/10
                         text-cyan-400
-                        border
-                        border-cyan-500/20">
+                        border border-cyan-500/20">
 
-                            <i
-                            class="fa-solid fa-pen">
-                            </i>
+                        <i class="fa-solid fa-pen"></i>
 
-                        </button>
-
-
-                        <!-- ACTIVE -->
-
-                        <button
-                        onclick="toggleActive(
-                            ${Number(pkg.id)},
-                            ${pkg.active}
-                        )"
-                        class="px-3 py-2
-                        rounded-lg
-                        bg-gray-800
-                        text-gray-300">
-
-                            <i
-                            class="fa-solid ${
-                                pkg.active
-                                ?
-                                "fa-eye-slash"
-                                :
-                                "fa-eye"
-                            }">
-                            </i>
-
-                        </button>
-
-
-                    </div>
-
-                `;
-
-
-                list.appendChild(
-                    card
-                );
-
-            }
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "LOAD PACKAGES ERROR:",
-            error
-        );
-
-
-        list.innerHTML = `
-
-            <div
-            class="text-center py-8
-            text-red-400 text-sm">
-
-                <i
-                class="fa-solid
-                fa-triangle-exclamation
-                text-xl mb-2">
-                </i>
-
-
-                <p>
-
-                    Failed to load packages.
-
-                </p>
-
-
-                <p
-                class="text-xs text-gray-500
-                mt-2 break-all">
-
-                    ${escapeHtml(
-                        error.message ||
-                        String(error)
-                    )}
-
-                </p>
-
-            </div>
-
-        `;
-
-    }
-
-}
-
-
-
-/* =====================================================
-   STATS
-===================================================== */
-
-function updateStats(data) {
-
-    document.getElementById(
-        "totalPackages"
-    ).innerText =
-        data.length;
-
-
-    document.getElementById(
-        "mlbbCount"
-    ).innerText =
-        data.filter(
-            x =>
-                x.game === "mlbb"
-        ).length;
-
-
-    document.getElementById(
-        "pubgCount"
-    ).innerText =
-        data.filter(
-            x =>
-                x.game === "pubg"
-        ).length;
-
-
-    document.getElementById(
-        "activeCount"
-    ).innerText =
-        data.filter(
-            x =>
-                x.active === true
-        ).length;
-
-}
-
-
-
-<!DOCTYPE html>
-<html lang="en" class="dark">
-<head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>IVR Admin Panel</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-rel="stylesheet">
-
-<script>
-
-tailwind.config = {
-
-    darkMode: 'class',
-
-    theme: {
-
-        extend: {
-
-            fontFamily: {
-
-                sans: ['Inter', 'sans-serif']
-
-            }
-
-        }
-
-    }
-
-};
-
-</script>
-
-
-<style>
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-
-    font-family: Inter, sans-serif;
-
-    background: #030712;
-
-    color: #f3f4f6;
-
-}
-
-.glass {
-
-    background: rgba(17,24,39,.75);
-
-    backdrop-filter: blur(18px);
-
-    border: 1px solid rgba(255,255,255,.08);
-
-}
-
-input,
-select {
-
-    outline: none;
-
-}
-
-input:focus,
-select:focus {
-
-    border-color: #06b6d4 !important;
-
-    box-shadow:
-        0 0 0 2px rgba(6,182,212,.12);
-
-}
-
-button {
-
-    transition: .2s ease;
-
-}
-
-button:active {
-
-    transform: scale(.97);
-
-}
-
-</style>
-
-</head>
-
-
-<body>
-
-
-<!-- =====================================================
-     ADMIN LOGIN SCREEN
-===================================================== -->
-
-<div
-id="loginScreen"
-class="fixed inset-0 z-[100] bg-gray-950 flex items-center justify-center p-4">
-
-    <div class="glass rounded-3xl p-6 w-full max-w-sm">
-
-        <div class="text-center mb-6">
-
-            <div
-            class="w-16 h-16 mx-auto rounded-2xl
-            bg-gradient-to-br from-cyan-500 to-emerald-400
-            flex items-center justify-center
-            text-gray-950">
-
-                <i class="fa-solid fa-lock text-2xl"></i>
-
-            </div>
-
-
-            <h1 class="font-black text-2xl mt-4">
-
-                IVR
-                <span class="text-cyan-400">
-                    ADMIN
-                </span>
-
-            </h1>
-
-
-            <p class="text-xs text-gray-500 mt-1">
-
-                Secure Admin Login
-
-            </p>
-
-        </div>
-
-
-        <div class="space-y-4">
-
-
-            <!-- EMAIL -->
-
-            <div>
-
-                <label class="text-xs text-gray-400">
-
-                    Email
-
-                </label>
-
-
-                <input
-                id="loginEmail"
-                type="email"
-                autocomplete="email"
-                placeholder="Admin email"
-                class="w-full mt-1 bg-gray-900
-                border border-gray-700 rounded-xl
-                px-3 py-3 text-sm">
-
-            </div>
-
-
-            <!-- PASSWORD -->
-
-            <div>
-
-                <label class="text-xs text-gray-400">
-
-                    Password
-
-                </label>
-
-
-                <div class="relative">
-
-                    <input
-                    id="loginPassword"
-                    type="password"
-                    autocomplete="current-password"
-                    placeholder="Password"
-                    class="w-full mt-1 bg-gray-900
-                    border border-gray-700 rounded-xl
-                    px-3 py-3 pr-11 text-sm">
+                    </button>
 
 
                     <button
-                    type="button"
-                    onclick="togglePassword()"
-                    class="absolute right-3 top-1/2
-                    -translate-y-1/2
-                    text-gray-500 hover:text-cyan-400">
+                        type="button"
+                        class="toggle-btn
+                        px-3 py-2 rounded-lg
+                        bg-gray-800 text-gray-300">
 
-                        <i
-                        id="passwordEye"
-                        class="fa-solid fa-eye">
-                        </i>
+                        <i class="fa-solid ${
+                            pkg.active
+                            ? "fa-eye-slash"
+                            : "fa-eye"
+                        }"></i>
 
                     </button>
 
                 </div>
 
-            </div>
-
-
-            <!-- LOGIN BUTTON -->
-
-            <button
-            id="loginBtn"
-            onclick="loginAdmin()"
-            class="w-full py-3 rounded-xl
-            bg-gradient-to-r from-cyan-500
-            to-emerald-500
-            text-gray-950 font-black">
-
-                <i
-                class="fa-solid fa-right-to-bracket mr-1">
-                </i>
-
-                Login
-
-            </button>
-
-
-        </div>
-
-    </div>
-
-</div>
-
-
-
-<!-- =====================================================
-     ADMIN APP
-===================================================== -->
-
-<div id="adminApp" class="hidden">
-
-
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
-<header
-class="sticky top-0 z-40 glass border-b border-gray-800">
-
-<div
-class="max-w-7xl mx-auto px-4 py-4
-flex items-center justify-between">
-
-
-    <!-- LOGO -->
-
-    <div class="flex items-center gap-3">
-
-        <div
-        class="w-11 h-11 rounded-xl
-        bg-gradient-to-br from-cyan-500
-        to-emerald-400
-        flex items-center justify-center
-        text-gray-950">
-
-            <i class="fa-solid fa-bolt text-xl"></i>
-
-        </div>
-
-
-        <div>
-
-            <h1 class="font-black text-lg">
-
-                IVR
-                <span class="text-cyan-400">
-                    ADMIN
-                </span>
-
-            </h1>
-
-
-            <p class="text-[10px] text-gray-500">
-
-                Package Management Panel
-
-            </p>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- RIGHT -->
-
-    <div class="flex items-center gap-3">
-
-
-        <div
-        class="hidden sm:flex text-xs
-        text-emerald-400
-        items-center gap-2">
-
-            <span
-            class="w-2 h-2 bg-emerald-400
-            rounded-full animate-pulse">
-            </span>
-
-            Database Online
-
-        </div>
-
-
-        <!-- LOGOUT -->
-
-        <button
-        onclick="logoutAdmin()"
-        class="px-3 py-2 rounded-lg
-        bg-red-500/10
-        text-red-400
-        border border-red-500/20
-        text-xs font-bold">
-
-            <i
-            class="fa-solid fa-right-from-bracket mr-1">
-            </i>
-
-            Logout
-
-        </button>
-
-
-    </div>
-
-</div>
-
-</header>
-
-
-
-<!-- =====================================================
-     MAIN
-===================================================== -->
-
-<main
-class="max-w-7xl mx-auto px-4 py-6">
-
-
-<!-- =====================================================
-     DASHBOARD
-===================================================== -->
-
-<div
-class="grid grid-cols-2 md:grid-cols-4
-gap-4 mb-6">
-
-
-    <!-- TOTAL -->
-
-    <div class="glass rounded-2xl p-4">
-
-        <p class="text-xs text-gray-500">
-
-            Total Packages
-
-        </p>
-
-
-        <p
-        id="totalPackages"
-        class="text-2xl font-black
-        text-cyan-400 mt-1">
-
-            0
-
-        </p>
-
-    </div>
-
-
-
-    <!-- MLBB -->
-
-    <div class="glass rounded-2xl p-4">
-
-        <p class="text-xs text-gray-500">
-
-            MLBB
-
-        </p>
-
-
-        <p
-        id="mlbbCount"
-        class="text-2xl font-black
-        text-blue-400 mt-1">
-
-            0
-
-        </p>
-
-    </div>
-
-
-
-    <!-- PUBG -->
-
-    <div class="glass rounded-2xl p-4">
-
-        <p class="text-xs text-gray-500">
-
-            PUBG
-
-        </p>
-
-
-        <p
-        id="pubgCount"
-        class="text-2xl font-black
-        text-amber-400 mt-1">
-
-            0
-
-        </p>
-
-    </div>
-
-
-
-    <!-- ACTIVE -->
-
-    <div class="glass rounded-2xl p-4">
-
-        <p class="text-xs text-gray-500">
-
-            Active
-
-        </p>
-
-
-        <p
-        id="activeCount"
-        class="text-2xl font-black
-        text-emerald-400 mt-1">
-
-            0
-
-        </p>
-
-    </div>
-
-</div>
-
-
-
-<!-- =====================================================
-     ADD PACKAGE
-===================================================== -->
-
-<section
-class="glass rounded-2xl p-5 mb-6">
-
-
-<div
-class="flex items-center justify-between mb-5">
-
-    <div>
-
-        <h2 class="font-black text-lg">
-
-            <i
-            class="fa-solid fa-plus
-            text-cyan-400 mr-2">
-            </i>
-
-            Add New Package
-
-        </h2>
-
-
-        <p class="text-xs text-gray-500 mt-1">
-
-            Add Diamonds or UC without
-            editing your website code.
-
-        </p>
-
-    </div>
-
-</div>
-
-
-
-<div
-class="grid md:grid-cols-2
-lg:grid-cols-4 gap-4">
-
-
-    <!-- GAME -->
-
-    <div>
-
-        <label class="text-xs text-gray-400">
-
-            Game
-
-        </label>
-
-
-        <select
-        id="game"
-        class="w-full mt-1 bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3 text-sm">
-
-            <option value="mlbb">
-                Mobile Legends
-            </option>
-
-            <option value="pubg">
-                PUBG Mobile
-            </option>
-
-        </select>
-
-    </div>
-
-
-
-    <!-- NAME -->
-
-    <div>
-
-        <label class="text-xs text-gray-400">
-
-            Package Name
-
-        </label>
-
-
-        <input
-        id="packageName"
-        type="text"
-        placeholder="e.g. 429 Diamonds"
-        class="w-full mt-1 bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3 text-sm">
-
-    </div>
-
-
-
-    <!-- BONUS -->
-
-    <div>
-
-        <label class="text-xs text-gray-400">
-
-            Bonus
-
-        </label>
-
-
-        <input
-        id="bonus"
-        type="text"
-        placeholder="+43 Bonus"
-        class="w-full mt-1 bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3 text-sm">
-
-    </div>
-
-
-
-    <!-- PRICE -->
-
-    <div>
-
-        <label class="text-xs text-gray-400">
-
-            Price (Ks)
-
-        </label>
-
-
-        <input
-        id="price"
-        type="number"
-        min="1"
-        step="1"
-        placeholder="23000"
-        class="w-full mt-1 bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3 text-sm">
-
-    </div>
-
-
-
-    <!-- ICON -->
-
-    <div>
-
-        <label class="text-xs text-gray-400">
-
-            Icon
-
-        </label>
-
-
-        <input
-        id="icon"
-        type="text"
-        value="fa-solid fa-gem"
-        class="w-full mt-1 bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3 text-sm">
-
-    </div>
-
-
-
-    <!-- HOT -->
-
-    <div class="flex items-end">
-
-        <label
-        class="flex items-center gap-3
-        bg-gray-900
-        border border-gray-700
-        rounded-xl px-4 py-3
-        w-full cursor-pointer">
-
-            <input
-            id="highlight"
-            type="checkbox">
-
-            <span class="text-sm">
-
-                HOT Package
-
-            </span>
-
-        </label>
-
-    </div>
-
-
-
-    <!-- ADD BUTTON -->
-
-    <div class="flex items-end">
-
-        <button
-        id="addPackageBtn"
-        onclick="addPackage()"
-        class="w-full py-3 rounded-xl
-        bg-gradient-to-r
-        from-cyan-500 to-emerald-500
-        text-gray-950 font-black">
-
-            <i
-            class="fa-solid fa-plus mr-1">
-            </i>
-
-            Add Package
-
-        </button>
-
-    </div>
-
-
-</div>
-
-</section>
-
-
-
-<!-- =====================================================
-     PACKAGE LIST
-===================================================== -->
-
-<section
-class="glass rounded-2xl p-5">
-
-
-<div
-class="flex flex-col md:flex-row
-md:items-center justify-between
-gap-3 mb-5">
-
-
-    <div>
-
-        <h2 class="font-black text-lg">
-
-            <i
-            class="fa-solid fa-box-open
-            text-cyan-400 mr-2">
-            </i>
-
-            Packages
-
-        </h2>
-
-
-        <p class="text-xs text-gray-500 mt-1">
-
-            Manage prices, status and packages.
-
-        </p>
-
-    </div>
-
-
-
-    <select
-    id="filterGame"
-    onchange="loadPackages()"
-    class="bg-gray-900
-    border border-gray-700
-    rounded-xl px-3 py-2 text-xs">
-
-        <option value="all">
-            All Games
-        </option>
-
-        <option value="mlbb">
-            Mobile Legends
-        </option>
-
-        <option value="pubg">
-            PUBG Mobile
-        </option>
-
-    </select>
-
-
-</div>
-
-
-
-<div
-id="packageList"
-class="space-y-3">
-
-
-    <div
-    class="text-center py-10 text-gray-500">
-
-        <i
-        class="fa-solid fa-spinner
-        fa-spin text-xl">
-        </i>
-
-
-        <p class="text-xs mt-2">
-
-            Loading packages...
-
-        </p>
-
-    </div>
-
-
-</div>
-
-</section>
-
-</main>
-
-
-</div>
-
-
-
-<!-- =====================================================
-     EDIT MODAL
-===================================================== -->
-
-<div
-id="editModal"
-class="fixed inset-0 z-50 hidden
-bg-black/80 backdrop-blur-md
-items-center justify-center p-4">
-
-
-<div
-class="glass rounded-2xl p-5
-w-full max-w-md">
-
-
-<div
-class="flex justify-between
-items-center mb-5">
-
-
-    <h3 class="font-black text-lg">
-
-        Edit Package
-
-    </h3>
-
-
-    <button
-    onclick="closeEdit()"
-    class="text-gray-400
-    hover:text-white">
-
-        <i
-        class="fa-solid fa-xmark">
-        </i>
-
-    </button>
-
-</div>
-
-
-
-<input
-id="editId"
-type="hidden">
-
-
-
-<div class="space-y-4">
-
-
-    <!-- NAME -->
-
-    <div>
-
-        <label
-        class="text-xs text-gray-400">
-
-            Package Name
-
-        </label>
-
-
-        <input
-        id="editName"
-        type="text"
-        class="w-full mt-1
-        bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3
-        text-sm">
-
-    </div>
-
-
-
-    <!-- BONUS -->
-
-    <div>
-
-        <label
-        class="text-xs text-gray-400">
-
-            Bonus
-
-        </label>
-
-
-        <input
-        id="editBonus"
-        type="text"
-        class="w-full mt-1
-        bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3
-        text-sm">
-
-    </div>
-
-
-
-    <!-- PRICE -->
-
-    <div>
-
-        <label
-        class="text-xs text-gray-400">
-
-            Price (Ks)
-
-        </label>
-
-
-        <input
-        id="editPrice"
-        type="number"
-        min="1"
-        step="1"
-        class="w-full mt-1
-        bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3
-        text-sm">
-
-    </div>
-
-
-
-    <!-- ICON -->
-
-    <div>
-
-        <label
-        class="text-xs text-gray-400">
-
-            Icon
-
-        </label>
-
-
-        <input
-        id="editIcon"
-        type="text"
-        class="w-full mt-1
-        bg-gray-900
-        border border-gray-700
-        rounded-xl px-3 py-3
-        text-sm">
-
-    </div>
-
-
-
-    <!-- HOT -->
-
-    <label
-    class="flex items-center gap-3">
-
-        <input
-        id="editHighlight"
-        type="checkbox">
-
-        <span class="text-sm">
-
-            HOT Package
-
-        </span>
-
-    </label>
-
-
-
-    <!-- ACTIVE -->
-
-    <label
-    class="flex items-center gap-3">
-
-        <input
-        id="editActive"
-        type="checkbox">
-
-        <span class="text-sm">
-
-            Active
-
-        </span>
-
-    </label>
-
-
-
-    <!-- SAVE -->
-
-    <button
-    id="saveEditBtn"
-    onclick="saveEdit()"
-    class="w-full py-3 rounded-xl
-    bg-gradient-to-r
-    from-cyan-500 to-emerald-500
-    text-gray-950 font-black">
-
-        <i
-        class="fa-solid fa-floppy-disk mr-1">
-        </i>
-
-        Save Changes
-
-    </button>
-
-
-</div>
-
-</div>
-
-</div>
-
-
-
-<script>
-
-
-/* =====================================================
-   SUPABASE CONFIG
-===================================================== */
-
-const SUPABASE_URL =
-"https://pjiiipywtywkztgjpmro.supabase.co";
-
-
-const SUPABASE_PUBLISHABLE_KEY =
-"sb_publishable_6Vjf1hUSWxI2HXRJ9eSHfw_OU8Vm2G5";
-
-
-const supabaseClient =
-window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-);
-
-
-
-/* =====================================================
-   PAGE LOAD
-===================================================== */
-
-window.addEventListener(
-    "load",
-    checkAdminSession
-);
-
-
-
-/* =====================================================
-   AUTH SESSION CHECK
-===================================================== */
-
-async function checkAdminSession() {
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient.auth.getSession();
-
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
-        const session =
-            data?.session;
-
-
-        if (session) {
-
-            showAdminPanel();
-
-        } else {
-
-            showLogin();
-
-        }
-
-
-    } catch (error) {
-
-        console.error(
-            "SESSION CHECK ERROR:",
-            error
-        );
-
-        showLogin();
-
-    }
-
-}
-
-
-
-/* =====================================================
-   SHOW LOGIN
-===================================================== */
-
-function showLogin() {
-
-    document
-        .getElementById("loginScreen")
-        .classList.remove("hidden");
-
-
-    document
-        .getElementById("adminApp")
-        .classList.add("hidden");
-
-}
-
-
-
-/* =====================================================
-   SHOW ADMIN PANEL
-===================================================== */
-
-async function showAdminPanel() {
-
-    document
-        .getElementById("loginScreen")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("adminApp")
-        .classList.remove("hidden");
-
-
-    await loadPackages();
-
-}
-
-
-
-/* =====================================================
-   LOGIN
-===================================================== */
-
-async function loginAdmin() {
-
-    const email =
-        document
-        .getElementById("loginEmail")
-        .value
-        .trim();
-
-
-    const password =
-        document
-        .getElementById("loginPassword")
-        .value;
-
-
-    if (!email) {
-
-        alert(
-            "Please enter your admin email."
-        );
-
-        return;
-
-    }
-
-
-    if (!password) {
-
-        alert(
-            "Please enter your password."
-        );
-
-        return;
-
-    }
-
-
-    const button =
-        document
-        .getElementById("loginBtn");
-
-
-    button.disabled = true;
-
-
-    button.innerHTML = `
-        <i class="fa-solid fa-spinner
-        fa-spin mr-1"></i>
-        Logging in...
-    `;
-
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient.auth
-            .signInWithPassword({
-
-                email: email,
-
-                password: password
-
-            });
-
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
-        if (!data?.session) {
-
-            throw new Error(
-                "Login successful but no session was created."
-            );
-
-        }
-
-
-        await showAdminPanel();
-
-
-    } catch (error) {
-
-        console.error(
-            "LOGIN ERROR:",
-            error
-        );
-
-
-        alert(
-            "Login failed:\n\n" +
-            (
-                error.message ||
-                String(error)
-            )
-        );
-
-
-    } finally {
-
-        button.disabled = false;
-
-
-        button.innerHTML = `
-            <i class="fa-solid
-            fa-right-to-bracket mr-1"></i>
-            Login
-        `;
-
-    }
-
-}
-
-
-
-/* =====================================================
-   PASSWORD SHOW / HIDE
-===================================================== */
-
-function togglePassword() {
-
-    const input =
-        document
-        .getElementById(
-            "loginPassword"
-        );
-
-
-    const eye =
-        document
-        .getElementById(
-            "passwordEye"
-        );
-
-
-    if (
-        input.type ===
-        "password"
-    ) {
-
-        input.type = "text";
-
-
-        eye.className =
-            "fa-solid fa-eye-slash";
-
-    } else {
-
-        input.type = "password";
-
-
-        eye.className =
-            "fa-solid fa-eye";
-
-    }
-
-}
-
-
-
-/* =====================================================
-   LOGOUT
-===================================================== */
-
-async function logoutAdmin() {
-
-    const confirmLogout =
-        confirm(
-            "Are you sure you want to logout?"
-        );
-
-
-    if (!confirmLogout) {
-
-        return;
-
-    }
-
-
-    try {
-
-        const {
-            error
-        } =
-            await supabaseClient.auth
-            .signOut();
-
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
-        location.reload();
-
-
-    } catch (error) {
-
-        console.error(
-            "LOGOUT ERROR:",
-            error
-        );
-
-
-        alert(
-            "Logout failed:\n\n" +
-            (
-                error.message ||
-                String(error)
-            )
-        );
-
-    }
-
-}
-
-
-
-/* =====================================================
-   BOOLEAN NORMALIZER
-===================================================== */
-
-function toBoolean(value) {
-
-    if (
-        typeof value ===
-        "boolean"
-    ) {
-
-        return value;
-
-    }
-
-
-    if (
-        typeof value ===
-        "number"
-    ) {
-
-        return value === 1;
-
-    }
-
-
-    const text =
-        String(
-            value ?? ""
-        )
-        .trim()
-        .toLowerCase();
-
-
-    return (
-
-        text === "true" ||
-        text === "1" ||
-        text === "yes" ||
-        text === "on"
-
-    );
-
-}
-
-
-
-/* =====================================================
-   LOAD PACKAGES
-===================================================== */
-
-async function loadPackages() {
-
-    const list =
-        document.getElementById(
-            "packageList"
-        );
-
-
-    if (!list) {
-
-        return;
-
-    }
-
-
-    const filter =
-        document.getElementById(
-            "filterGame"
-        ).value;
-
-
-    list.innerHTML = `
-
-        <div
-        class="text-center py-10
-        text-gray-500">
-
-            <i
-            class="fa-solid
-            fa-spinner fa-spin text-xl">
-            </i>
-
-            <p class="text-xs mt-2">
-
-                Loading packages...
-
-            </p>
-
-        </div>
-
-    `;
-
-
-    try {
-
-        let query =
-            supabaseClient
-            .from("packages")
-            .select(`
-                id,
-                game,
-                name,
-                bonus,
-                price,
-                icon,
-                highlight,
-                active
-            `)
-            .order(
-                "id",
-                {
-                    ascending: true
-                }
-            );
-
-
-        if (
-            filter !==
-            "all"
-        ) {
-
-            query =
-                query.eq(
-                    "game",
-                    filter
-                );
-
-        }
-
-
-        const {
-            data,
-            error
-        } =
-            await query;
-
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
-        const packages =
-            (
-                data || []
-            )
-            .map(
-                pkg => {
-
-                    return {
-
-                        id:
-                            pkg.id,
-
-                        game:
-                            String(
-                                pkg.game ??
-                                ""
-                            )
-                            .trim()
-                            .toLowerCase(),
-
-                        name:
-                            String(
-                                pkg.name ??
-                                ""
-                            ),
-
-                        bonus:
-                            String(
-                                pkg.bonus ??
-                                ""
-                            ),
-
-                        price:
-                            Number(
-                                pkg.price
-                            ) || 0,
-
-                        icon:
-                            String(
-                                pkg.icon ??
-                                ""
-                            )
-                            .trim()
-                            ||
-                            "fa-solid fa-gem",
-
-                        highlight:
-                            toBoolean(
-                                pkg.highlight
-                            ),
-
-                        active:
-                            toBoolean(
-                                pkg.active
-                            )
-
-                    };
-
-                }
-            );
-
-
-        updateStats(
-            packages
-        );
-
-
-        if (
-            !packages.length
-        ) {
-
-            list.innerHTML = `
-
-                <div
-                class="text-center
-                py-10 text-gray-500">
-
-                    <i
-                    class="fa-solid
-                    fa-box-open
-                    text-2xl mb-2">
-                    </i>
-
-                    <p class="text-sm">
-
-                        No packages found.
-
-                    </p>
-
-                </div>
-
             `;
 
-            return;
 
-        }
+            card.querySelector(
+                ".edit-btn"
+            ).addEventListener(
+                "click",
+                () => openEdit(pkg)
+            );
 
 
-        list.innerHTML = "";
+            card.querySelector(
+                ".toggle-btn"
+            ).addEventListener(
+                "click",
+                () =>
+                toggleActive(
+                    pkg.id,
+                    pkg.active
+                )
+            );
 
 
-        packages.forEach(
-            pkg => {
+            list.appendChild(card);
 
-                const card =
-                    document
-                    .createElement(
-                        "div"
-                    );
-
-
-                card.className =
-                    "bg-gray-950/70 border " +
-                    "border-gray-800 rounded-xl p-4 " +
-                    "flex flex-col md:flex-row " +
-                    "md:items-center gap-4";
-
-
-                const gameName =
-                    pkg.game ===
-                    "mlbb"
-                    ?
-                    "Mobile Legends"
-                    :
-                    "PUBG Mobile";
-
-
-                const safePackage =
-                    JSON.stringify(
-                        pkg
-                    )
-                    .replace(
-                        /'/g,
-                        "&#39;"
-                    );
-
-
-                card.innerHTML = `
-
-                    <!-- ICON -->
-
-                    <div
-                    class="w-11 h-11 shrink-0
-                    rounded-xl
-                    bg-cyan-500/10
-                    text-cyan-400
-                    flex items-center
-                    justify-center">
-
-                        <i
-                        class="${escapeHtml(
-                            pkg.icon
-                        )}">
-                        </i>
-
-                    </div>
-
-
-                    <!-- INFO -->
-
-                    <div class="flex-1">
-
-                        <div
-                        class="flex items-center
-                        gap-2 flex-wrap">
-
-
-                            <span
-                            class="font-bold text-white">
-
-                                ${escapeHtml(
-                                    pkg.name
-                                )}
-
-                            </span>
-
-
-                            ${
-                                pkg.highlight
-                                ?
-                                `
-                                <span
-                                class="text-[9px]
-                                bg-amber-500
-                                text-black px-2
-                                py-0.5 rounded
-                                font-black">
-
-                                    HOT
-
-                                </span>
-                                `
-                                :
-                                ""
-                            }
-
-
-                            ${
-                                pkg.active
-                                ?
-                                `
-                                <span
-                                class="text-[9px]
-                                bg-emerald-500/20
-                                text-emerald-400
-                                px-2 py-0.5
-                                rounded">
-
-                                    ACTIVE
-
-                                </span>
-                                `
-                                :
-                                `
-                                <span
-                                class="text-[9px]
-                                bg-red-500/20
-                                text-red-400
-                                px-2 py-0.5
-                                rounded">
-
-                                    OFF
-
-                                </span>
-                                `
-                            }
-
-                        </div>
-
-
-                        <div
-                        class="text-xs
-                        text-gray-500 mt-1">
-
-                            ${gameName}
-
-                            •
-
-                            ${escapeHtml(
-                                pkg.bonus
-                            )}
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- PRICE -->
-
-                    <div
-                    class="text-emerald-400
-                    font-black
-                    whitespace-nowrap">
-
-                        ${Number(
-                            pkg.price
-                        ).toLocaleString()}
-                        Ks
-
-                    </div>
-
-
-                    <!-- BUTTONS -->
-
-                    <div
-                    class="flex gap-2">
-
-
-                        <!-- EDIT -->
-
-                        <button
-                        onclick='openEdit(${safePackage})'
-                        class="px-3 py-2
-                        rounded-lg
-                        bg-cyan-500/10
-                        text-cyan-400
-                        border
-                        border-cyan-500/20">
-
-                            <i
-                            class="fa-solid fa-pen">
-                            </i>
-
-                        </button>
-
-
-                        <!-- ACTIVE -->
-
-                        <button
-                        onclick="toggleActive(
-                            ${Number(pkg.id)},
-                            ${pkg.active}
-                        )"
-                        class="px-3 py-2
-                        rounded-lg
-                        bg-gray-800
-                        text-gray-300">
-
-                            <i
-                            class="fa-solid ${
-                                pkg.active
-                                ?
-                                "fa-eye-slash"
-                                :
-                                "fa-eye"
-                            }">
-                            </i>
-
-                        </button>
-
-
-                    </div>
-
-                `;
-
-
-                list.appendChild(
-                    card
-                );
-
-            }
-        );
+        });
 
 
     } catch (error) {
 
         console.error(
-            "LOAD PACKAGES ERROR:",
+            "LOAD ERROR:",
             error
         );
 
-
         list.innerHTML = `
-
-            <div
-            class="text-center py-8
+            <div class="text-center py-8
             text-red-400 text-sm">
 
-                <i
-                class="fa-solid
+                <i class="fa-solid
                 fa-triangle-exclamation
-                text-xl mb-2">
-                </i>
+                text-xl mb-2"></i>
 
+                <p>Failed to load packages.</p>
 
-                <p>
-
-                    Failed to load packages.
-
-                </p>
-
-
-                <p
-                class="text-xs text-gray-500
+                <p class="text-xs text-gray-500
                 mt-2 break-all">
 
                     ${escapeHtml(
@@ -3793,13 +1315,11 @@ async function loadPackages() {
                 </p>
 
             </div>
-
         `;
 
     }
 
 }
-
 
 
 /* =====================================================
@@ -3810,82 +1330,74 @@ function updateStats(data) {
 
     document.getElementById(
         "totalPackages"
-    ).innerText =
-        data.length;
-
+    ).textContent =
+    data.length;
 
     document.getElementById(
         "mlbbCount"
-    ).innerText =
-        data.filter(
-            x =>
-                x.game === "mlbb"
-        ).length;
-
+    ).textContent =
+    data.filter(
+        x => x.game === "mlbb"
+    ).length;
 
     document.getElementById(
         "pubgCount"
-    ).innerText =
-        data.filter(
-            x =>
-                x.game === "pubg"
-        ).length;
-
+    ).textContent =
+    data.filter(
+        x => x.game === "pubg"
+    ).length;
 
     document.getElementById(
         "activeCount"
-    ).innerText =
-        data.filter(
-            x =>
-                x.active === true
-        ).length;
+    ).textContent =
+    data.filter(
+        x => x.active === true
+    ).length;
 
 }
-
 
 
 /* =====================================================
    ADD PACKAGE
 ===================================================== */
 
-async function addPackage() {
+addPackageForm.addEventListener(
+"submit",
+async function(event) {
+
+    event.preventDefault();
 
     const game =
-        document.getElementById(
-            "game"
-        ).value;
-
+    document.getElementById(
+        "game"
+    ).value;
 
     const name =
-        document.getElementById(
-            "packageName"
-        ).value.trim();
-
+    document.getElementById(
+        "packageName"
+    ).value.trim();
 
     const bonus =
-        document.getElementById(
-            "bonus"
-        ).value.trim();
-
+    document.getElementById(
+        "bonus"
+    ).value.trim();
 
     const price =
-        Number(
-            document.getElementById(
-                "price"
-            ).value
-        );
-
+    Number(
+        document.getElementById(
+            "price"
+        ).value
+    );
 
     const icon =
-        document.getElementById(
-            "icon"
-        ).value.trim();
-
+    document.getElementById(
+        "icon"
+    ).value.trim();
 
     const highlight =
-        document.getElementById(
-            "highlight"
-        ).checked;
+    document.getElementById(
+        "highlight"
+    ).checked;
 
 
     if (!name) {
@@ -3897,7 +1409,6 @@ async function addPackage() {
         return;
 
     }
-
 
     if (
         !Number.isFinite(price) ||
@@ -3914,23 +1425,15 @@ async function addPackage() {
 
 
     const button =
-        document.getElementById(
-            "addPackageBtn"
-        );
-
+    document.getElementById(
+        "addPackageBtn"
+    );
 
     button.disabled = true;
 
-
     button.innerHTML = `
-
-        <i
-        class="fa-solid
-        fa-spinner fa-spin mr-1">
-        </i>
-
+        <i class="fa-solid fa-spinner fa-spin mr-1"></i>
         Adding...
-
     `;
 
 
@@ -3940,34 +1443,21 @@ async function addPackage() {
             data,
             error
         } =
-            await supabaseClient
-            .from("packages")
-            .insert([{
-
-                game:
-                    game,
-
-                name:
-                    name,
-
-                bonus:
-                    bonus,
-
-                price:
-                    price,
-
-                icon:
-                    icon ||
-                    "fa-solid fa-gem",
-
-                highlight:
-                    highlight,
-
-                active:
-                    true
-
-            }])
-            .select();
+        await supabaseClient
+        .from("packages")
+        .insert({
+            game: game,
+            name: name,
+            bonus: bonus,
+            price: price,
+            icon:
+                icon ||
+                "fa-solid fa-gem",
+            highlight: highlight,
+            active: true
+        })
+        .select()
+        .single();
 
 
         if (error) {
@@ -3987,16 +1477,13 @@ async function addPackage() {
             "packageName"
         ).value = "";
 
-
         document.getElementById(
             "bonus"
         ).value = "";
 
-
         document.getElementById(
             "price"
         ).value = "";
-
 
         document.getElementById(
             "highlight"
@@ -4018,7 +1505,6 @@ async function addPackage() {
             error
         );
 
-
         alert(
             "Failed to add package:\n\n" +
             (
@@ -4027,26 +1513,18 @@ async function addPackage() {
             )
         );
 
-
     } finally {
 
         button.disabled = false;
 
-
         button.innerHTML = `
-
-            <i
-            class="fa-solid fa-plus mr-1">
-            </i>
-
+            <i class="fa-solid fa-plus mr-1"></i>
             Add Package
-
         `;
 
     }
 
-}
-
+});
 
 
 /* =====================================================
@@ -4058,67 +1536,58 @@ function openEdit(pkg) {
     document.getElementById(
         "editId"
     ).value =
-        pkg.id;
-
+    pkg.id;
 
     document.getElementById(
         "editName"
     ).value =
-        pkg.name || "";
-
+    pkg.name || "";
 
     document.getElementById(
         "editBonus"
     ).value =
-        pkg.bonus || "";
-
+    pkg.bonus || "";
 
     document.getElementById(
         "editPrice"
     ).value =
-        pkg.price || "";
-
+    pkg.price || "";
 
     document.getElementById(
         "editIcon"
     ).value =
-        pkg.icon ||
-        "fa-solid fa-gem";
-
+    pkg.icon ||
+    "fa-solid fa-gem";
 
     document.getElementById(
         "editHighlight"
     ).checked =
-        toBoolean(
-            pkg.highlight
-        );
-
+    toBoolean(
+        pkg.highlight
+    );
 
     document.getElementById(
         "editActive"
     ).checked =
-        toBoolean(
-            pkg.active
-        );
+    toBoolean(
+        pkg.active
+    );
 
 
     const modal =
-        document.getElementById(
-            "editModal"
-        );
-
+    document.getElementById(
+        "editModal"
+    );
 
     modal.classList.remove(
         "hidden"
     );
-
 
     modal.classList.add(
         "flex"
     );
 
 }
-
 
 
 /* =====================================================
@@ -4128,15 +1597,13 @@ function openEdit(pkg) {
 function closeEdit() {
 
     const modal =
-        document.getElementById(
-            "editModal"
-        );
-
+    document.getElementById(
+        "editModal"
+    );
 
     modal.classList.add(
         "hidden"
     );
-
 
     modal.classList.remove(
         "flex"
@@ -4145,72 +1612,66 @@ function closeEdit() {
 }
 
 
+document.getElementById(
+    "closeEditBtn"
+).addEventListener(
+    "click",
+    closeEdit
+);
+
 
 /* =====================================================
    SAVE EDIT
 ===================================================== */
 
-async function saveEdit() {
+editForm.addEventListener(
+"submit",
+async function(event) {
+
+    event.preventDefault();
 
     const id =
-        document.getElementById(
-            "editId"
-        ).value;
-
+    document.getElementById(
+        "editId"
+    ).value;
 
     const name =
-        document.getElementById(
-            "editName"
-        ).value.trim();
-
+    document.getElementById(
+        "editName"
+    ).value.trim();
 
     const bonus =
-        document.getElementById(
-            "editBonus"
-        ).value.trim();
-
+    document.getElementById(
+        "editBonus"
+    ).value.trim();
 
     const price =
-        Number(
-            document.getElementById(
-                "editPrice"
-            ).value
-        );
-
+    Number(
+        document.getElementById(
+            "editPrice"
+        ).value
+    );
 
     const icon =
-        document.getElementById(
-            "editIcon"
-        ).value.trim();
-
+    document.getElementById(
+        "editIcon"
+    ).value.trim();
 
     const highlight =
-        document.getElementById(
-            "editHighlight"
-        ).checked;
-
+    document.getElementById(
+        "editHighlight"
+    ).checked;
 
     const active =
-        document.getElementById(
-            "editActive"
-        ).checked;
+    document.getElementById(
+        "editActive"
+    ).checked;
 
 
-    if (!id) {
-
-        alert(
-            "Package ID is missing."
-        );
-
-        return;
-
-    }
-
-
-    if (!name) {
+    if (!id || !name) {
 
         alert(
-            "Package name is required."
+            "Package ID and name are required."
         );
 
         return;
@@ -4232,59 +1693,16 @@ async function saveEdit() {
     }
 
 
-    const updateData = {
-
-        name:
-            name,
-
-        bonus:
-            bonus,
-
-        price:
-            price,
-
-        icon:
-            icon ||
-            "fa-solid fa-gem",
-
-        highlight:
-            highlight,
-
-        active:
-            active
-
-    };
-
-
-    console.log(
-        "UPDATING PACKAGE:",
-        {
-            id:
-                id,
-
-            ...updateData
-        }
-    );
-
-
     const button =
-        document.getElementById(
-            "saveEditBtn"
-        );
-
+    document.getElementById(
+        "saveEditBtn"
+    );
 
     button.disabled = true;
 
-
     button.innerHTML = `
-
-        <i
-        class="fa-solid
-        fa-spinner fa-spin mr-1">
-        </i>
-
+        <i class="fa-solid fa-spinner fa-spin mr-1"></i>
         Saving...
-
     `;
 
 
@@ -4294,25 +1712,24 @@ async function saveEdit() {
             data,
             error
         } =
-            await supabaseClient
-            .from("packages")
-            .update(
-                updateData
-            )
-            .eq(
-                "id",
-                id
-            )
-            .select();
-
-
-        console.log(
-            "SUPABASE UPDATE RESULT:",
-            {
-                data,
-                error
-            }
-        );
+        await supabaseClient
+        .from("packages")
+        .update({
+            name: name,
+            bonus: bonus,
+            price: price,
+            icon:
+                icon ||
+                "fa-solid fa-gem",
+            highlight: highlight,
+            active: active
+        })
+        .eq(
+            "id",
+            id
+        )
+        .select()
+        .single();
 
 
         if (error) {
@@ -4322,50 +1739,30 @@ async function saveEdit() {
         }
 
 
-        if (
-            !data ||
-            data.length === 0
-        ) {
+        if (!data) {
 
-            alert(
-                "Update was not applied.\n\n" +
-                "Supabase returned 0 updated rows."
+            throw new Error(
+                "No package was updated."
             );
-
-            return;
 
         }
 
 
-        console.log(
-            "UPDATED PACKAGE:",
-            data[0]
-        );
-
-
         closeEdit();
-
 
         await loadPackages();
 
-
         alert(
-            "Package updated successfully!\n\n" +
-            "New Price: " +
-            Number(
-                data[0].price
-            ).toLocaleString() +
-            " Ks"
+            "Package updated successfully."
         );
 
 
     } catch (error) {
 
         console.error(
-            "UPDATE PACKAGE ERROR:",
+            "UPDATE ERROR:",
             error
         );
-
 
         alert(
             "Update failed:\n\n" +
@@ -4375,27 +1772,18 @@ async function saveEdit() {
             )
         );
 
-
     } finally {
 
         button.disabled = false;
 
-
         button.innerHTML = `
-
-            <i
-            class="fa-solid
-            fa-floppy-disk mr-1">
-            </i>
-
+            <i class="fa-solid fa-floppy-disk mr-1"></i>
             Save Changes
-
         `;
 
     }
 
-}
-
+});
 
 
 /* =====================================================
@@ -4407,21 +1795,8 @@ async function toggleActive(
     current
 ) {
 
-    if (!id) {
-
-        alert(
-            "Package ID is missing."
-        );
-
-        return;
-
-    }
-
-
     const newStatus =
-        !toBoolean(
-            current
-        );
+    !toBoolean(current);
 
 
     try {
@@ -4430,28 +1805,17 @@ async function toggleActive(
             data,
             error
         } =
-            await supabaseClient
-            .from("packages")
-            .update({
-
-                active:
-                    newStatus
-
-            })
-            .eq(
-                "id",
-                id
-            )
-            .select();
-
-
-        console.log(
-            "TOGGLE RESULT:",
-            {
-                data,
-                error
-            }
-        );
+        await supabaseClient
+        .from("packages")
+        .update({
+            active: newStatus
+        })
+        .eq(
+            "id",
+            id
+        )
+        .select()
+        .single();
 
 
         if (error) {
@@ -4461,17 +1825,11 @@ async function toggleActive(
         }
 
 
-        if (
-            !data ||
-            data.length === 0
-        ) {
+        if (!data) {
 
-            alert(
-                "Status was not changed.\n\n" +
-                "Supabase returned 0 updated rows."
+            throw new Error(
+                "No package was updated."
             );
-
-            return;
 
         }
 
@@ -4486,7 +1844,6 @@ async function toggleActive(
             error
         );
 
-
         alert(
             "Failed to change status:\n\n" +
             (
@@ -4500,7 +1857,6 @@ async function toggleActive(
 }
 
 
-
 /* =====================================================
    ESCAPE HTML
 ===================================================== */
@@ -4510,45 +1866,22 @@ function escapeHtml(value) {
     return String(
         value ?? ""
     )
-
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-
-    .replace(
-        /</g,
-        "&lt;"
-    )
-
-    .replace(
-        />/g,
-        "&gt;"
-    )
-
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-
-    .replace(
-        /'/g,
-        "&#039;"
-    );
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 
 }
 
 
-
 /* =====================================================
-   CLOSE MODAL OUTSIDE CLICK
+   CLOSE MODAL OUTSIDE
 ===================================================== */
 
-document
-.getElementById(
+document.getElementById(
     "editModal"
-)
-.addEventListener(
+).addEventListener(
     "click",
     function(event) {
 
@@ -4563,582 +1896,7 @@ document
     }
 );
 
-
-
-/* =====================================================
-   ENTER KEY LOGIN
-===================================================== */
-
-document
-.getElementById(
-    "loginPassword"
-)
-.addEventListener(
-    "keydown",
-    function(event) {
-
-        if (
-            event.key === "Enter"
-        ) {
-
-            loginAdmin();
-
-        }
-
-    }
-);
-
-
 </script>
-
-
-</body>
-</html>
-
-
-
-/* =====================================================
-   OPEN EDIT
-===================================================== */
-
-function openEdit(pkg) {
-
-    document.getElementById(
-        "editId"
-    ).value =
-        pkg.id;
-
-
-    document.getElementById(
-        "editName"
-    ).value =
-        pkg.name || "";
-
-
-    document.getElementById(
-        "editBonus"
-    ).value =
-        pkg.bonus || "";
-
-
-    document.getElementById(
-        "editPrice"
-    ).value =
-        pkg.price || "";
-
-
-    document.getElementById(
-        "editIcon"
-    ).value =
-        pkg.icon ||
-        "fa-solid fa-gem";
-
-
-    document.getElementById(
-        "editHighlight"
-    ).checked =
-        toBoolean(
-            pkg.highlight
-        );
-
-
-    document.getElementById(
-        "editActive"
-    ).checked =
-        toBoolean(
-            pkg.active
-        );
-
-
-    const modal =
-        document.getElementById(
-            "editModal"
-        );
-
-
-    modal.classList.remove(
-        "hidden"
-    );
-
-
-    modal.classList.add(
-        "flex"
-    );
-
-}
-
-
-
-/* =====================================================
-   CLOSE EDIT
-===================================================== */
-
-function closeEdit() {
-
-    const modal =
-        document.getElementById(
-            "editModal"
-        );
-
-
-    modal.classList.add(
-        "hidden"
-    );
-
-
-    modal.classList.remove(
-        "flex"
-    );
-
-}
-
-
-
-/* =====================================================
-   SAVE EDIT
-===================================================== */
-
-async function saveEdit() {
-
-    const id =
-        document.getElementById(
-            "editId"
-        ).value;
-
-
-    const name =
-        document.getElementById(
-            "editName"
-        ).value.trim();
-
-
-    const bonus =
-        document.getElementById(
-            "editBonus"
-        ).value.trim();
-
-
-    const price =
-        Number(
-            document.getElementById(
-                "editPrice"
-            ).value
-        );
-
-
-    const icon =
-        document.getElementById(
-            "editIcon"
-        ).value.trim();
-
-
-    const highlight =
-        document.getElementById(
-            "editHighlight"
-        ).checked;
-
-
-    const active =
-        document.getElementById(
-            "editActive"
-        ).checked;
-
-
-    if (!id) {
-
-        alert(
-            "Package ID is missing."
-        );
-
-        return;
-
-    }
-
-
-    if (!name) {
-
-        alert(
-            "Package name is required."
-        );
-
-        return;
-
-    }
-
-
-    if (
-        !Number.isFinite(price) ||
-        price <= 0
-    ) {
-
-        alert(
-            "Please enter a valid price."
-        );
-
-        return;
-
-    }
-
-
-    const updateData = {
-
-        name:
-            name,
-
-        bonus:
-            bonus,
-
-        price:
-            price,
-
-        icon:
-            icon ||
-            "fa-solid fa-gem",
-
-        highlight:
-            highlight,
-
-        active:
-            active
-
-    };
-
-
-    console.log(
-        "UPDATING PACKAGE:",
-        {
-            id:
-                id,
-
-            ...updateData
-        }
-    );
-
-
-    const button =
-        document.getElementById(
-            "saveEditBtn"
-        );
-
-
-    button.disabled = true;
-
-
-    button.innerHTML = `
-
-        <i
-        class="fa-solid
-        fa-spinner fa-spin mr-1">
-        </i>
-
-        Saving...
-
-    `;
-
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-            .from("packages")
-            .update(
-                updateData
-            )
-            .eq(
-                "id",
-                id
-            )
-            .select();
-
-
-        console.log(
-            "SUPABASE UPDATE RESULT:",
-            {
-                data,
-                error
-            }
-        );
-
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
-        if (
-            !data ||
-            data.length === 0
-        ) {
-
-            alert(
-                "Update was not applied.\n\n" +
-                "Supabase returned 0 updated rows."
-            );
-
-            return;
-
-        }
-
-
-        console.log(
-            "UPDATED PACKAGE:",
-            data[0]
-        );
-
-
-        closeEdit();
-
-
-        await loadPackages();
-
-
-        alert(
-            "Package updated successfully!\n\n" +
-            "New Price: " +
-            Number(
-                data[0].price
-            ).toLocaleString() +
-            " Ks"
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "UPDATE PACKAGE ERROR:",
-            error
-        );
-
-
-        alert(
-            "Update failed:\n\n" +
-            (
-                error.message ||
-                String(error)
-            )
-        );
-
-
-    } finally {
-
-        button.disabled = false;
-
-
-        button.innerHTML = `
-
-            <i
-            class="fa-solid
-            fa-floppy-disk mr-1">
-            </i>
-
-            Save Changes
-
-        `;
-
-    }
-
-}
-
-
-
-/* =====================================================
-   TOGGLE ACTIVE
-===================================================== */
-
-async function toggleActive(
-    id,
-    current
-) {
-
-    if (!id) {
-
-        alert(
-            "Package ID is missing."
-        );
-
-        return;
-
-    }
-
-
-    const newStatus =
-        !toBoolean(
-            current
-        );
-
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-            .from("packages")
-            .update({
-
-                active:
-                    newStatus
-
-            })
-            .eq(
-                "id",
-                id
-            )
-            .select();
-
-
-        console.log(
-            "TOGGLE RESULT:",
-            {
-                data,
-                error
-            }
-        );
-
-
-        if (error) {
-
-            throw error;
-
-        }
-
-
-        if (
-            !data ||
-            data.length === 0
-        ) {
-
-            alert(
-                "Status was not changed.\n\n" +
-                "Supabase returned 0 updated rows."
-            );
-
-            return;
-
-        }
-
-
-        await loadPackages();
-
-
-    } catch (error) {
-
-        console.error(
-            "TOGGLE ERROR:",
-            error
-        );
-
-
-        alert(
-            "Failed to change status:\n\n" +
-            (
-                error.message ||
-                String(error)
-            )
-        );
-
-    }
-
-}
-
-
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
-
-function escapeHtml(value) {
-
-    return String(
-        value ?? ""
-    )
-
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-
-    .replace(
-        /</g,
-        "&lt;"
-    )
-
-    .replace(
-        />/g,
-        "&gt;"
-    )
-
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-
-    .replace(
-        /'/g,
-        "&#039;"
-    );
-
-}
-
-
-
-/* =====================================================
-   CLOSE MODAL OUTSIDE CLICK
-===================================================== */
-
-document
-.getElementById(
-    "editModal"
-)
-.addEventListener(
-    "click",
-    function(event) {
-
-        if (
-            event.target === this
-        ) {
-
-            closeEdit();
-
-        }
-
-    }
-);
-
-
-
-/* =====================================================
-   ENTER KEY LOGIN
-===================================================== */
-
-document
-.getElementById(
-    "loginPassword"
-)
-.addEventListener(
-    "keydown",
-    function(event) {
-
-        if (
-            event.key === "Enter"
-        ) {
-
-            loginAdmin();
-
-        }
-
-    }
-);
-
-
-</script>
-
 
 </body>
 </html>
