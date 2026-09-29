@@ -1921,6 +1921,1929 @@ function updateStats(data) {
 
 
 
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>IVR Admin Panel</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+rel="stylesheet">
+
+<script>
+
+tailwind.config = {
+
+    darkMode: 'class',
+
+    theme: {
+
+        extend: {
+
+            fontFamily: {
+
+                sans: ['Inter', 'sans-serif']
+
+            }
+
+        }
+
+    }
+
+};
+
+</script>
+
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    font-family: Inter, sans-serif;
+
+    background: #030712;
+
+    color: #f3f4f6;
+
+}
+
+.glass {
+
+    background: rgba(17,24,39,.75);
+
+    backdrop-filter: blur(18px);
+
+    border: 1px solid rgba(255,255,255,.08);
+
+}
+
+input,
+select {
+
+    outline: none;
+
+}
+
+input:focus,
+select:focus {
+
+    border-color: #06b6d4 !important;
+
+    box-shadow:
+        0 0 0 2px rgba(6,182,212,.12);
+
+}
+
+button {
+
+    transition: .2s ease;
+
+}
+
+button:active {
+
+    transform: scale(.97);
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     ADMIN LOGIN SCREEN
+===================================================== -->
+
+<div
+id="loginScreen"
+class="fixed inset-0 z-[100] bg-gray-950 flex items-center justify-center p-4">
+
+    <div class="glass rounded-3xl p-6 w-full max-w-sm">
+
+        <div class="text-center mb-6">
+
+            <div
+            class="w-16 h-16 mx-auto rounded-2xl
+            bg-gradient-to-br from-cyan-500 to-emerald-400
+            flex items-center justify-center
+            text-gray-950">
+
+                <i class="fa-solid fa-lock text-2xl"></i>
+
+            </div>
+
+
+            <h1 class="font-black text-2xl mt-4">
+
+                IVR
+                <span class="text-cyan-400">
+                    ADMIN
+                </span>
+
+            </h1>
+
+
+            <p class="text-xs text-gray-500 mt-1">
+
+                Secure Admin Login
+
+            </p>
+
+        </div>
+
+
+        <div class="space-y-4">
+
+
+            <!-- EMAIL -->
+
+            <div>
+
+                <label class="text-xs text-gray-400">
+
+                    Email
+
+                </label>
+
+
+                <input
+                id="loginEmail"
+                type="email"
+                autocomplete="email"
+                placeholder="Admin email"
+                class="w-full mt-1 bg-gray-900
+                border border-gray-700 rounded-xl
+                px-3 py-3 text-sm">
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div>
+
+                <label class="text-xs text-gray-400">
+
+                    Password
+
+                </label>
+
+
+                <div class="relative">
+
+                    <input
+                    id="loginPassword"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="Password"
+                    class="w-full mt-1 bg-gray-900
+                    border border-gray-700 rounded-xl
+                    px-3 py-3 pr-11 text-sm">
+
+
+                    <button
+                    type="button"
+                    onclick="togglePassword()"
+                    class="absolute right-3 top-1/2
+                    -translate-y-1/2
+                    text-gray-500 hover:text-cyan-400">
+
+                        <i
+                        id="passwordEye"
+                        class="fa-solid fa-eye">
+                        </i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- LOGIN BUTTON -->
+
+            <button
+            id="loginBtn"
+            onclick="loginAdmin()"
+            class="w-full py-3 rounded-xl
+            bg-gradient-to-r from-cyan-500
+            to-emerald-500
+            text-gray-950 font-black">
+
+                <i
+                class="fa-solid fa-right-to-bracket mr-1">
+                </i>
+
+                Login
+
+            </button>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     ADMIN APP
+===================================================== -->
+
+<div id="adminApp" class="hidden">
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header
+class="sticky top-0 z-40 glass border-b border-gray-800">
+
+<div
+class="max-w-7xl mx-auto px-4 py-4
+flex items-center justify-between">
+
+
+    <!-- LOGO -->
+
+    <div class="flex items-center gap-3">
+
+        <div
+        class="w-11 h-11 rounded-xl
+        bg-gradient-to-br from-cyan-500
+        to-emerald-400
+        flex items-center justify-center
+        text-gray-950">
+
+            <i class="fa-solid fa-bolt text-xl"></i>
+
+        </div>
+
+
+        <div>
+
+            <h1 class="font-black text-lg">
+
+                IVR
+                <span class="text-cyan-400">
+                    ADMIN
+                </span>
+
+            </h1>
+
+
+            <p class="text-[10px] text-gray-500">
+
+                Package Management Panel
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- RIGHT -->
+
+    <div class="flex items-center gap-3">
+
+
+        <div
+        class="hidden sm:flex text-xs
+        text-emerald-400
+        items-center gap-2">
+
+            <span
+            class="w-2 h-2 bg-emerald-400
+            rounded-full animate-pulse">
+            </span>
+
+            Database Online
+
+        </div>
+
+
+        <!-- LOGOUT -->
+
+        <button
+        onclick="logoutAdmin()"
+        class="px-3 py-2 rounded-lg
+        bg-red-500/10
+        text-red-400
+        border border-red-500/20
+        text-xs font-bold">
+
+            <i
+            class="fa-solid fa-right-from-bracket mr-1">
+            </i>
+
+            Logout
+
+        </button>
+
+
+    </div>
+
+</div>
+
+</header>
+
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main
+class="max-w-7xl mx-auto px-4 py-6">
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<div
+class="grid grid-cols-2 md:grid-cols-4
+gap-4 mb-6">
+
+
+    <!-- TOTAL -->
+
+    <div class="glass rounded-2xl p-4">
+
+        <p class="text-xs text-gray-500">
+
+            Total Packages
+
+        </p>
+
+
+        <p
+        id="totalPackages"
+        class="text-2xl font-black
+        text-cyan-400 mt-1">
+
+            0
+
+        </p>
+
+    </div>
+
+
+
+    <!-- MLBB -->
+
+    <div class="glass rounded-2xl p-4">
+
+        <p class="text-xs text-gray-500">
+
+            MLBB
+
+        </p>
+
+
+        <p
+        id="mlbbCount"
+        class="text-2xl font-black
+        text-blue-400 mt-1">
+
+            0
+
+        </p>
+
+    </div>
+
+
+
+    <!-- PUBG -->
+
+    <div class="glass rounded-2xl p-4">
+
+        <p class="text-xs text-gray-500">
+
+            PUBG
+
+        </p>
+
+
+        <p
+        id="pubgCount"
+        class="text-2xl font-black
+        text-amber-400 mt-1">
+
+            0
+
+        </p>
+
+    </div>
+
+
+
+    <!-- ACTIVE -->
+
+    <div class="glass rounded-2xl p-4">
+
+        <p class="text-xs text-gray-500">
+
+            Active
+
+        </p>
+
+
+        <p
+        id="activeCount"
+        class="text-2xl font-black
+        text-emerald-400 mt-1">
+
+            0
+
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     ADD PACKAGE
+===================================================== -->
+
+<section
+class="glass rounded-2xl p-5 mb-6">
+
+
+<div
+class="flex items-center justify-between mb-5">
+
+    <div>
+
+        <h2 class="font-black text-lg">
+
+            <i
+            class="fa-solid fa-plus
+            text-cyan-400 mr-2">
+            </i>
+
+            Add New Package
+
+        </h2>
+
+
+        <p class="text-xs text-gray-500 mt-1">
+
+            Add Diamonds or UC without
+            editing your website code.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<div
+class="grid md:grid-cols-2
+lg:grid-cols-4 gap-4">
+
+
+    <!-- GAME -->
+
+    <div>
+
+        <label class="text-xs text-gray-400">
+
+            Game
+
+        </label>
+
+
+        <select
+        id="game"
+        class="w-full mt-1 bg-gray-900
+        border border-gray-700
+        rounded-xl px-3 py-3 text-sm">
+
+            <option value="mlbb">
+                Mobile Legends
+            </option>
+
+            <option value="pubg">
+                PUBG Mobile
+            </option>
+
+        </select>
+
+    </div>
+
+
+
+    <!-- NAME -->
+
+    <div>
+
+        <label class="text-xs text-gray-400">
+
+            Package Name
+
+        </label>
+
+
+        <input
+        id="packageName"
+        type="text"
+        placeholder="e.g. 429 Diamonds"
+        class="w-full mt-1 bg-gray-900
+        border border-gray-700
+        rounded-xl px-3 py-3 text-sm">
+
+    </div>
+
+
+
+    <!-- BONUS -->
+
+    <div>
+
+        <label class="text-xs text-gray-400">
+
+            Bonus
+
+        </label>
+
+
+        <input
+        id="bonus"
+        type="text"
+        placeholder="+43 Bonus"
+        class="w-full mt-1 bg-gray-900
+        border border-gray-700
+        rounded-xl px-3 py-3 text-sm">
+
+    </div>
+
+
+
+    <!-- PRICE -->
+
+    <div>
+
+        <label class="text-xs text-gray-400">
+
+            Price (Ks)
+
+        </label>
+
+
+        <input
+        id="price"
+        type="number"
+        min="1"
+        step="1"
+        placeholder="23000"
+        class="w-full mt-1 bg-gray-900
+        border border-gray-700
+        rounded-xl px-3 py-3 text-sm">
+
+    </div>
+
+
+
+    <!-- ICON -->
+
+    <div>
+
+        <label class="text-xs text-gray-400">
+
+            Icon
+
+        </label>
+
+
+        <input
+        id="icon"
+        type="text"
+        value="fa-solid fa-gem"
+        class="w-full mt-1 bg-gray-900
+        border border-gray-700
+        rounded-xl px-3 py-3 text-sm">
+
+    </div>
+
+
+
+    <!-- HOT -->
+
+    <div class="flex items-end">
+
+        <label
+        class="flex items-center gap-3
+        bg-gray-900
+        border border-gray-700
+        rounded-xl px-4 py-3
+        w-full cursor-pointer">
+
+            <input
+            id="highlight"
+            type="checkbox">
+
+            <span class="text-sm">
+
+                HOT Package
+
+            </span>
+
+        </label>
+
+    </div>
+
+
+
+    <!-- ADD BUTTON -->
+
+    <div class="flex items-end">
+
+        <button
+        id="addPackageBtn"
+        onclick="addPackage()"
+        class="w-full py-3 rounded-xl
+        bg-gradient-to-r
+        from-cyan-500 to-emerald-500
+        text-gray-950 font-black">
+
+            <i
+            class="fa-solid fa-plus mr-1">
+            </i>
+
+            Add Package
+
+        </button>
+
+    </div>
+
+
+</div>
+
+</section>
+
+
+
+<!-- =====================================================
+     PACKAGE LIST
+===================================================== -->
+
+<section
+class="glass rounded-2xl p-5">
+
+
+<div
+class="flex flex-col md:flex-row
+md:items-center justify-between
+gap-3 mb-5">
+
+
+    <div>
+
+        <h2 class="font-black text-lg">
+
+            <i
+            class="fa-solid fa-box-open
+            text-cyan-400 mr-2">
+            </i>
+
+            Packages
+
+        </h2>
+
+
+        <p class="text-xs text-gray-500 mt-1">
+
+            Manage prices, status and packages.
+
+        </p>
+
+    </div>
+
+
+
+    <select
+    id="filterGame"
+    onchange="loadPackages()"
+    class="bg-gray-900
+    border border-gray-700
+    rounded-xl px-3 py-2 text-xs">
+
+        <option value="all">
+            All Games
+        </option>
+
+        <option value="mlbb">
+            Mobile Legends
+        </option>
+
+        <option value="pubg">
+            PUBG Mobile
+        </option>
+
+    </select>
+
+
+</div>
+
+
+
+<div
+id="packageList"
+class="space-y-3">
+
+
+    <div
+    class="text-center py-10 text-gray-500">
+
+        <i
+        class="fa-solid fa-spinner
+        fa-spin text-xl">
+        </i>
+
+
+        <p class="text-xs mt-2">
+
+            Loading packages...
+
+        </p>
+
+    </div>
+
+
+</div>
+
+</section>
+
+</main>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     EDIT MODAL
+===================================================== -->
+
+<div
+id="editModal"
+class="fixed inset-0 z-50 hidden
+bg-black/80 backdrop-blur-md
+items-center justify-center p-4">
+
+
+<div
+class="glass rounded-2xl p-5
+w-full max-w-md">
+
+
+<div
+class="flex justify-between
+items-center mb-5">
+
+
+    <h3 class="font-black text-lg">
+
+        Edit Package
+
+    </h3>
+
+
+    <button
+    onclick="closeEdit()"
+    class="text-gray-400
+    hover:text-white">
+
+        <i
+        class="fa-solid fa-xmark">
+        </i>
+
+    </button>
+
+</div>
+
+
+
+<input
+id="editId"
+type="hidden">
+
+
+
+<div class="space-y-4">
+
+
+    <!-- NAME -->
+
+    <div>
+
+        <label
+        class="text-xs text-gray-400">
+
+            Package Name
+
+        </label>
+
+
+        <input
+        id="editName"
+        type="text"
+        class="w-full mt-1
+        bg-gray-900
+        border border-gray-700
+        rounded-xl px-3 py-3
+        text-sm">
+
+    </div>
+
+
+
+    <!-- BONUS -->
+
+    <div>
+
+        <label
+        class="text-xs text-gray-400">
+
+            Bonus
+
+        </label>
+
+
+        <input
+        id="editBonus"
+        type="text"
+        class="w-full mt-1
+        bg-gray-900
+        border border-gray-700
+        rounded-xl px-3 py-3
+        text-sm">
+
+    </div>
+
+
+
+    <!-- PRICE -->
+
+    <div>
+
+        <label
+        class="text-xs text-gray-400">
+
+            Price (Ks)
+
+        </label>
+
+
+        <input
+        id="editPrice"
+        type="number"
+        min="1"
+        step="1"
+        class="w-full mt-1
+        bg-gray-900
+        border border-gray-700
+        rounded-xl px-3 py-3
+        text-sm">
+
+    </div>
+
+
+
+    <!-- ICON -->
+
+    <div>
+
+        <label
+        class="text-xs text-gray-400">
+
+            Icon
+
+        </label>
+
+
+        <input
+        id="editIcon"
+        type="text"
+        class="w-full mt-1
+        bg-gray-900
+        border border-gray-700
+        rounded-xl px-3 py-3
+        text-sm">
+
+    </div>
+
+
+
+    <!-- HOT -->
+
+    <label
+    class="flex items-center gap-3">
+
+        <input
+        id="editHighlight"
+        type="checkbox">
+
+        <span class="text-sm">
+
+            HOT Package
+
+        </span>
+
+    </label>
+
+
+
+    <!-- ACTIVE -->
+
+    <label
+    class="flex items-center gap-3">
+
+        <input
+        id="editActive"
+        type="checkbox">
+
+        <span class="text-sm">
+
+            Active
+
+        </span>
+
+    </label>
+
+
+
+    <!-- SAVE -->
+
+    <button
+    id="saveEditBtn"
+    onclick="saveEdit()"
+    class="w-full py-3 rounded-xl
+    bg-gradient-to-r
+    from-cyan-500 to-emerald-500
+    text-gray-950 font-black">
+
+        <i
+        class="fa-solid fa-floppy-disk mr-1">
+        </i>
+
+        Save Changes
+
+    </button>
+
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<script>
+
+
+/* =====================================================
+   SUPABASE CONFIG
+===================================================== */
+
+const SUPABASE_URL =
+"https://pjiiipywtywkztgjpmro.supabase.co";
+
+
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable_6Vjf1hUSWxI2HXRJ9eSHfw_OU8Vm2G5";
+
+
+const supabaseClient =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+
+
+/* =====================================================
+   PAGE LOAD
+===================================================== */
+
+window.addEventListener(
+    "load",
+    checkAdminSession
+);
+
+
+
+/* =====================================================
+   AUTH SESSION CHECK
+===================================================== */
+
+async function checkAdminSession() {
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.auth.getSession();
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        const session =
+            data?.session;
+
+
+        if (session) {
+
+            showAdminPanel();
+
+        } else {
+
+            showLogin();
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "SESSION CHECK ERROR:",
+            error
+        );
+
+        showLogin();
+
+    }
+
+}
+
+
+
+/* =====================================================
+   SHOW LOGIN
+===================================================== */
+
+function showLogin() {
+
+    document
+        .getElementById("loginScreen")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("adminApp")
+        .classList.add("hidden");
+
+}
+
+
+
+/* =====================================================
+   SHOW ADMIN PANEL
+===================================================== */
+
+async function showAdminPanel() {
+
+    document
+        .getElementById("loginScreen")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("adminApp")
+        .classList.remove("hidden");
+
+
+    await loadPackages();
+
+}
+
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+async function loginAdmin() {
+
+    const email =
+        document
+        .getElementById("loginEmail")
+        .value
+        .trim();
+
+
+    const password =
+        document
+        .getElementById("loginPassword")
+        .value;
+
+
+    if (!email) {
+
+        alert(
+            "Please enter your admin email."
+        );
+
+        return;
+
+    }
+
+
+    if (!password) {
+
+        alert(
+            "Please enter your password."
+        );
+
+        return;
+
+    }
+
+
+    const button =
+        document
+        .getElementById("loginBtn");
+
+
+    button.disabled = true;
+
+
+    button.innerHTML = `
+        <i class="fa-solid fa-spinner
+        fa-spin mr-1"></i>
+        Logging in...
+    `;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.auth
+            .signInWithPassword({
+
+                email: email,
+
+                password: password
+
+            });
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        if (!data?.session) {
+
+            throw new Error(
+                "Login successful but no session was created."
+            );
+
+        }
+
+
+        await showAdminPanel();
+
+
+    } catch (error) {
+
+        console.error(
+            "LOGIN ERROR:",
+            error
+        );
+
+
+        alert(
+            "Login failed:\n\n" +
+            (
+                error.message ||
+                String(error)
+            )
+        );
+
+
+    } finally {
+
+        button.disabled = false;
+
+
+        button.innerHTML = `
+            <i class="fa-solid
+            fa-right-to-bracket mr-1"></i>
+            Login
+        `;
+
+    }
+
+}
+
+
+
+/* =====================================================
+   PASSWORD SHOW / HIDE
+===================================================== */
+
+function togglePassword() {
+
+    const input =
+        document
+        .getElementById(
+            "loginPassword"
+        );
+
+
+    const eye =
+        document
+        .getElementById(
+            "passwordEye"
+        );
+
+
+    if (
+        input.type ===
+        "password"
+    ) {
+
+        input.type = "text";
+
+
+        eye.className =
+            "fa-solid fa-eye-slash";
+
+    } else {
+
+        input.type = "password";
+
+
+        eye.className =
+            "fa-solid fa-eye";
+
+    }
+
+}
+
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+async function logoutAdmin() {
+
+    const confirmLogout =
+        confirm(
+            "Are you sure you want to logout?"
+        );
+
+
+    if (!confirmLogout) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const {
+            error
+        } =
+            await supabaseClient.auth
+            .signOut();
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        location.reload();
+
+
+    } catch (error) {
+
+        console.error(
+            "LOGOUT ERROR:",
+            error
+        );
+
+
+        alert(
+            "Logout failed:\n\n" +
+            (
+                error.message ||
+                String(error)
+            )
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   BOOLEAN NORMALIZER
+===================================================== */
+
+function toBoolean(value) {
+
+    if (
+        typeof value ===
+        "boolean"
+    ) {
+
+        return value;
+
+    }
+
+
+    if (
+        typeof value ===
+        "number"
+    ) {
+
+        return value === 1;
+
+    }
+
+
+    const text =
+        String(
+            value ?? ""
+        )
+        .trim()
+        .toLowerCase();
+
+
+    return (
+
+        text === "true" ||
+        text === "1" ||
+        text === "yes" ||
+        text === "on"
+
+    );
+
+}
+
+
+
+/* =====================================================
+   LOAD PACKAGES
+===================================================== */
+
+async function loadPackages() {
+
+    const list =
+        document.getElementById(
+            "packageList"
+        );
+
+
+    if (!list) {
+
+        return;
+
+    }
+
+
+    const filter =
+        document.getElementById(
+            "filterGame"
+        ).value;
+
+
+    list.innerHTML = `
+
+        <div
+        class="text-center py-10
+        text-gray-500">
+
+            <i
+            class="fa-solid
+            fa-spinner fa-spin text-xl">
+            </i>
+
+            <p class="text-xs mt-2">
+
+                Loading packages...
+
+            </p>
+
+        </div>
+
+    `;
+
+
+    try {
+
+        let query =
+            supabaseClient
+            .from("packages")
+            .select(`
+                id,
+                game,
+                name,
+                bonus,
+                price,
+                icon,
+                highlight,
+                active
+            `)
+            .order(
+                "id",
+                {
+                    ascending: true
+                }
+            );
+
+
+        if (
+            filter !==
+            "all"
+        ) {
+
+            query =
+                query.eq(
+                    "game",
+                    filter
+                );
+
+        }
+
+
+        const {
+            data,
+            error
+        } =
+            await query;
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        const packages =
+            (
+                data || []
+            )
+            .map(
+                pkg => {
+
+                    return {
+
+                        id:
+                            pkg.id,
+
+                        game:
+                            String(
+                                pkg.game ??
+                                ""
+                            )
+                            .trim()
+                            .toLowerCase(),
+
+                        name:
+                            String(
+                                pkg.name ??
+                                ""
+                            ),
+
+                        bonus:
+                            String(
+                                pkg.bonus ??
+                                ""
+                            ),
+
+                        price:
+                            Number(
+                                pkg.price
+                            ) || 0,
+
+                        icon:
+                            String(
+                                pkg.icon ??
+                                ""
+                            )
+                            .trim()
+                            ||
+                            "fa-solid fa-gem",
+
+                        highlight:
+                            toBoolean(
+                                pkg.highlight
+                            ),
+
+                        active:
+                            toBoolean(
+                                pkg.active
+                            )
+
+                    };
+
+                }
+            );
+
+
+        updateStats(
+            packages
+        );
+
+
+        if (
+            !packages.length
+        ) {
+
+            list.innerHTML = `
+
+                <div
+                class="text-center
+                py-10 text-gray-500">
+
+                    <i
+                    class="fa-solid
+                    fa-box-open
+                    text-2xl mb-2">
+                    </i>
+
+                    <p class="text-sm">
+
+                        No packages found.
+
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        list.innerHTML = "";
+
+
+        packages.forEach(
+            pkg => {
+
+                const card =
+                    document
+                    .createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "bg-gray-950/70 border " +
+                    "border-gray-800 rounded-xl p-4 " +
+                    "flex flex-col md:flex-row " +
+                    "md:items-center gap-4";
+
+
+                const gameName =
+                    pkg.game ===
+                    "mlbb"
+                    ?
+                    "Mobile Legends"
+                    :
+                    "PUBG Mobile";
+
+
+                const safePackage =
+                    JSON.stringify(
+                        pkg
+                    )
+                    .replace(
+                        /'/g,
+                        "&#39;"
+                    );
+
+
+                card.innerHTML = `
+
+                    <!-- ICON -->
+
+                    <div
+                    class="w-11 h-11 shrink-0
+                    rounded-xl
+                    bg-cyan-500/10
+                    text-cyan-400
+                    flex items-center
+                    justify-center">
+
+                        <i
+                        class="${escapeHtml(
+                            pkg.icon
+                        )}">
+                        </i>
+
+                    </div>
+
+
+                    <!-- INFO -->
+
+                    <div class="flex-1">
+
+                        <div
+                        class="flex items-center
+                        gap-2 flex-wrap">
+
+
+                            <span
+                            class="font-bold text-white">
+
+                                ${escapeHtml(
+                                    pkg.name
+                                )}
+
+                            </span>
+
+
+                            ${
+                                pkg.highlight
+                                ?
+                                `
+                                <span
+                                class="text-[9px]
+                                bg-amber-500
+                                text-black px-2
+                                py-0.5 rounded
+                                font-black">
+
+                                    HOT
+
+                                </span>
+                                `
+                                :
+                                ""
+                            }
+
+
+                            ${
+                                pkg.active
+                                ?
+                                `
+                                <span
+                                class="text-[9px]
+                                bg-emerald-500/20
+                                text-emerald-400
+                                px-2 py-0.5
+                                rounded">
+
+                                    ACTIVE
+
+                                </span>
+                                `
+                                :
+                                `
+                                <span
+                                class="text-[9px]
+                                bg-red-500/20
+                                text-red-400
+                                px-2 py-0.5
+                                rounded">
+
+                                    OFF
+
+                                </span>
+                                `
+                            }
+
+                        </div>
+
+
+                        <div
+                        class="text-xs
+                        text-gray-500 mt-1">
+
+                            ${gameName}
+
+                            •
+
+                            ${escapeHtml(
+                                pkg.bonus
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PRICE -->
+
+                    <div
+                    class="text-emerald-400
+                    font-black
+                    whitespace-nowrap">
+
+                        ${Number(
+                            pkg.price
+                        ).toLocaleString()}
+                        Ks
+
+                    </div>
+
+
+                    <!-- BUTTONS -->
+
+                    <div
+                    class="flex gap-2">
+
+
+                        <!-- EDIT -->
+
+                        <button
+                        onclick='openEdit(${safePackage})'
+                        class="px-3 py-2
+                        rounded-lg
+                        bg-cyan-500/10
+                        text-cyan-400
+                        border
+                        border-cyan-500/20">
+
+                            <i
+                            class="fa-solid fa-pen">
+                            </i>
+
+                        </button>
+
+
+                        <!-- ACTIVE -->
+
+                        <button
+                        onclick="toggleActive(
+                            ${Number(pkg.id)},
+                            ${pkg.active}
+                        )"
+                        class="px-3 py-2
+                        rounded-lg
+                        bg-gray-800
+                        text-gray-300">
+
+                            <i
+                            class="fa-solid ${
+                                pkg.active
+                                ?
+                                "fa-eye-slash"
+                                :
+                                "fa-eye"
+                            }">
+                            </i>
+
+                        </button>
+
+
+                    </div>
+
+                `;
+
+
+                list.appendChild(
+                    card
+                );
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "LOAD PACKAGES ERROR:",
+            error
+        );
+
+
+        list.innerHTML = `
+
+            <div
+            class="text-center py-8
+            text-red-400 text-sm">
+
+                <i
+                class="fa-solid
+                fa-triangle-exclamation
+                text-xl mb-2">
+                </i>
+
+
+                <p>
+
+                    Failed to load packages.
+
+                </p>
+
+
+                <p
+                class="text-xs text-gray-500
+                mt-2 break-all">
+
+                    ${escapeHtml(
+                        error.message ||
+                        String(error)
+                    )}
+
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+
+/* =====================================================
+   STATS
+===================================================== */
+
+function updateStats(data) {
+
+    document.getElementById(
+        "totalPackages"
+    ).innerText =
+        data.length;
+
+
+    document.getElementById(
+        "mlbbCount"
+    ).innerText =
+        data.filter(
+            x =>
+                x.game === "mlbb"
+        ).length;
+
+
+    document.getElementById(
+        "pubgCount"
+    ).innerText =
+        data.filter(
+            x =>
+                x.game === "pubg"
+        ).length;
+
+
+    document.getElementById(
+        "activeCount"
+    ).innerText =
+        data.filter(
+            x =>
+                x.active === true
+        ).length;
+
+}
+
+
+
 /* =====================================================
    ADD PACKAGE
 ===================================================== */
@@ -2123,6 +4046,554 @@ async function addPackage() {
     }
 
 }
+
+
+
+/* =====================================================
+   OPEN EDIT
+===================================================== */
+
+function openEdit(pkg) {
+
+    document.getElementById(
+        "editId"
+    ).value =
+        pkg.id;
+
+
+    document.getElementById(
+        "editName"
+    ).value =
+        pkg.name || "";
+
+
+    document.getElementById(
+        "editBonus"
+    ).value =
+        pkg.bonus || "";
+
+
+    document.getElementById(
+        "editPrice"
+    ).value =
+        pkg.price || "";
+
+
+    document.getElementById(
+        "editIcon"
+    ).value =
+        pkg.icon ||
+        "fa-solid fa-gem";
+
+
+    document.getElementById(
+        "editHighlight"
+    ).checked =
+        toBoolean(
+            pkg.highlight
+        );
+
+
+    document.getElementById(
+        "editActive"
+    ).checked =
+        toBoolean(
+            pkg.active
+        );
+
+
+    const modal =
+        document.getElementById(
+            "editModal"
+        );
+
+
+    modal.classList.remove(
+        "hidden"
+    );
+
+
+    modal.classList.add(
+        "flex"
+    );
+
+}
+
+
+
+/* =====================================================
+   CLOSE EDIT
+===================================================== */
+
+function closeEdit() {
+
+    const modal =
+        document.getElementById(
+            "editModal"
+        );
+
+
+    modal.classList.add(
+        "hidden"
+    );
+
+
+    modal.classList.remove(
+        "flex"
+    );
+
+}
+
+
+
+/* =====================================================
+   SAVE EDIT
+===================================================== */
+
+async function saveEdit() {
+
+    const id =
+        document.getElementById(
+            "editId"
+        ).value;
+
+
+    const name =
+        document.getElementById(
+            "editName"
+        ).value.trim();
+
+
+    const bonus =
+        document.getElementById(
+            "editBonus"
+        ).value.trim();
+
+
+    const price =
+        Number(
+            document.getElementById(
+                "editPrice"
+            ).value
+        );
+
+
+    const icon =
+        document.getElementById(
+            "editIcon"
+        ).value.trim();
+
+
+    const highlight =
+        document.getElementById(
+            "editHighlight"
+        ).checked;
+
+
+    const active =
+        document.getElementById(
+            "editActive"
+        ).checked;
+
+
+    if (!id) {
+
+        alert(
+            "Package ID is missing."
+        );
+
+        return;
+
+    }
+
+
+    if (!name) {
+
+        alert(
+            "Package name is required."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !Number.isFinite(price) ||
+        price <= 0
+    ) {
+
+        alert(
+            "Please enter a valid price."
+        );
+
+        return;
+
+    }
+
+
+    const updateData = {
+
+        name:
+            name,
+
+        bonus:
+            bonus,
+
+        price:
+            price,
+
+        icon:
+            icon ||
+            "fa-solid fa-gem",
+
+        highlight:
+            highlight,
+
+        active:
+            active
+
+    };
+
+
+    console.log(
+        "UPDATING PACKAGE:",
+        {
+            id:
+                id,
+
+            ...updateData
+        }
+    );
+
+
+    const button =
+        document.getElementById(
+            "saveEditBtn"
+        );
+
+
+    button.disabled = true;
+
+
+    button.innerHTML = `
+
+        <i
+        class="fa-solid
+        fa-spinner fa-spin mr-1">
+        </i>
+
+        Saving...
+
+    `;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+            .from("packages")
+            .update(
+                updateData
+            )
+            .eq(
+                "id",
+                id
+            )
+            .select();
+
+
+        console.log(
+            "SUPABASE UPDATE RESULT:",
+            {
+                data,
+                error
+            }
+        );
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        if (
+            !data ||
+            data.length === 0
+        ) {
+
+            alert(
+                "Update was not applied.\n\n" +
+                "Supabase returned 0 updated rows."
+            );
+
+            return;
+
+        }
+
+
+        console.log(
+            "UPDATED PACKAGE:",
+            data[0]
+        );
+
+
+        closeEdit();
+
+
+        await loadPackages();
+
+
+        alert(
+            "Package updated successfully!\n\n" +
+            "New Price: " +
+            Number(
+                data[0].price
+            ).toLocaleString() +
+            " Ks"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "UPDATE PACKAGE ERROR:",
+            error
+        );
+
+
+        alert(
+            "Update failed:\n\n" +
+            (
+                error.message ||
+                String(error)
+            )
+        );
+
+
+    } finally {
+
+        button.disabled = false;
+
+
+        button.innerHTML = `
+
+            <i
+            class="fa-solid
+            fa-floppy-disk mr-1">
+            </i>
+
+            Save Changes
+
+        `;
+
+    }
+
+}
+
+
+
+/* =====================================================
+   TOGGLE ACTIVE
+===================================================== */
+
+async function toggleActive(
+    id,
+    current
+) {
+
+    if (!id) {
+
+        alert(
+            "Package ID is missing."
+        );
+
+        return;
+
+    }
+
+
+    const newStatus =
+        !toBoolean(
+            current
+        );
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+            .from("packages")
+            .update({
+
+                active:
+                    newStatus
+
+            })
+            .eq(
+                "id",
+                id
+            )
+            .select();
+
+
+        console.log(
+            "TOGGLE RESULT:",
+            {
+                data,
+                error
+            }
+        );
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        if (
+            !data ||
+            data.length === 0
+        ) {
+
+            alert(
+                "Status was not changed.\n\n" +
+                "Supabase returned 0 updated rows."
+            );
+
+            return;
+
+        }
+
+
+        await loadPackages();
+
+
+    } catch (error) {
+
+        console.error(
+            "TOGGLE ERROR:",
+            error
+        );
+
+
+        alert(
+            "Failed to change status:\n\n" +
+            (
+                error.message ||
+                String(error)
+            )
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(value) {
+
+    return String(
+        value ?? ""
+    )
+
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+
+    .replace(
+        /</g,
+        "&lt;"
+    )
+
+    .replace(
+        />/g,
+        "&gt;"
+    )
+
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+
+/* =====================================================
+   CLOSE MODAL OUTSIDE CLICK
+===================================================== */
+
+document
+.getElementById(
+    "editModal"
+)
+.addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            event.target === this
+        ) {
+
+            closeEdit();
+
+        }
+
+    }
+);
+
+
+
+/* =====================================================
+   ENTER KEY LOGIN
+===================================================== */
+
+document
+.getElementById(
+    "loginPassword"
+)
+.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Enter"
+        ) {
+
+            loginAdmin();
+
+        }
+
+    }
+);
+
+
+</script>
+
+
+</body>
+</html>
 
 
 
