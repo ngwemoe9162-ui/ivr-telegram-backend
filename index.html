@@ -1129,7 +1129,9 @@ async function loadPackages() {
             .from('packages')
             .select('*')
             .eq('active', true)
-            .order('price', {
+            // Keep the same package order as the Supabase table.
+            // The table's auto-incrementing `id` represents insertion order.
+            .order('id', {
                 ascending: true
             });
 
@@ -2470,4 +2472,3 @@ function showToast(message) {
 
 </body>
 </html>
-
